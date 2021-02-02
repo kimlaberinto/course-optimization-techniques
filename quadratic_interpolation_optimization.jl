@@ -13,7 +13,7 @@ end
 # ╔═╡ 468a2484-6516-11eb-14a6-c55cd458a893
 function find_quadratic_coefs(xs ,ys)
 	# A*coefs = y
-	A = [xs[i]^power for i in 1:3, power in 2:-1:0]
+	A = [x_val^power for x_val in xs, power in 2:-1:0]
 	p, q, r = A \ ys
 	return (p, q, r)
 end
