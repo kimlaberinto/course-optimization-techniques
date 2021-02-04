@@ -4,10 +4,20 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        el
+    end
+end
+
 # ╔═╡ 1abc28f0-6516-11eb-2671-31a6fbf782e7
 begin
 	using LinearAlgebra
 	using Plots
+	using PlutoUI
 end
 
 # ╔═╡ 468a2484-6516-11eb-14a6-c55cd458a893
@@ -142,8 +152,11 @@ function quadratic_interpolation_optimization(a, b, c, objective_function; N = 5
 
 end
 
+# ╔═╡ 06d26d4e-66a4-11eb-1b3e-09128d3f9ff1
+@bind initial_c_point Slider(-5:0.1:5)
+
 # ╔═╡ 978029d8-669e-11eb-23cc-b9a1f3cfbe31
-quadratic_interpolation_optimization(-6, 6, 0, x -> Himmelblau(x, 5.5), N = 5)
+quadratic_interpolation_optimization(-6, 6, initial_c_point, x -> Himmelblau(x, 5.5), N = 5)
 
 # ╔═╡ Cell order:
 # ╠═1abc28f0-6516-11eb-2671-31a6fbf782e7
@@ -157,3 +170,4 @@ quadratic_interpolation_optimization(-6, 6, 0, x -> Himmelblau(x, 5.5), N = 5)
 # ╠═533b2a96-6595-11eb-2c04-0fb5b472a717
 # ╠═11988ca0-6685-11eb-3bd9-99d05cbfd720
 # ╠═978029d8-669e-11eb-23cc-b9a1f3cfbe31
+# ╠═06d26d4e-66a4-11eb-1b3e-09128d3f9ff1
