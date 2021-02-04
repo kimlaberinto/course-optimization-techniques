@@ -114,7 +114,11 @@ function quadratic_interpolation_optimization(a, b, c, objective_function; N = 5
 	c_current = c
 	
 	plot()
-	add_himmelblau_to_existing_plot(a:0.01:b)
+	xs_objective_function_plot = a:0.01:b
+	ys_objective_function_plot =  @. objective_function(xs_objective_function_plot)
+	plot!(xs_objective_function_plot, ys_objective_function_plot, legend=false)
+	xlabel!("x")
+	ylabel!("y")
 	
 	for i in 1:N
 		
