@@ -56,14 +56,19 @@ end
 
 # ╔═╡ ffe0cb68-656b-11eb-20d5-75ef4f130bd7
 #Visually looks unimodal
-begin
-	xs_func = -7:0.01:7
-	ys_func = @. Himmelblau(xs_func,5.5)
+function add_himmelblau_to_existing_plot(xs_to_plot)
+	ys_plotted = @. Himmelblau(xs_to_plot,5.5)
 	
-	plot(xs_func, ys_func, legend=false)
+	plot!(xs_to_plot, ys_plotted, label="objective function", legend=false)
 	title!("Himmelblau(x, y=5.5)")
 	xlabel!("x")
 	ylabel!("Himmelblau function")
+end
+
+# ╔═╡ 8193ca02-669d-11eb-361a-c3dc76953a3a
+begin
+	plot()
+	add_himmelblau_to_existing_plot(-7:0.01:7)
 end
 
 # ╔═╡ 533b2a96-6595-11eb-2c04-0fb5b472a717
@@ -77,15 +82,19 @@ begin
 	#Find the optimum of parabola
 	vertex_fitted_x, vertex_fitted_y = find_vertex_of_parabola(p_fit, q_fit, r_fit)
 	
+	plot()
 	#Plot original
-	plot(xs_func, ys_func, label="function")
+	add_himmelblau_to_existing_plot(-7:0.01:7)
 	
 	#Plot the samples
-	scatter!(samples_x, samples_y, label="samples")
+	scatter!(samples_x, samples_y, label="samples", legend=true)
 	
 	plot!(x_fitted, y_fitted, label="parabola")
 	scatter!([vertex_fitted_x], [vertex_fitted_y], label="guessed optimum")
 end
+
+# ╔═╡ 11988ca0-6685-11eb-3bd9-99d05cbfd720
+
 
 # ╔═╡ Cell order:
 # ╠═1abc28f0-6516-11eb-2671-31a6fbf782e7
@@ -95,4 +104,6 @@ end
 # ╠═0ade54c8-6518-11eb-20cb-0b674f957dd3
 # ╠═3ba6feca-6593-11eb-16c3-8f7bdfc7733f
 # ╠═ffe0cb68-656b-11eb-20d5-75ef4f130bd7
+# ╠═8193ca02-669d-11eb-361a-c3dc76953a3a
 # ╠═533b2a96-6595-11eb-2c04-0fb5b472a717
+# ╠═11988ca0-6685-11eb-3bd9-99d05cbfd720
