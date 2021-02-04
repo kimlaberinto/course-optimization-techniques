@@ -94,7 +94,56 @@ begin
 end
 
 # ╔═╡ 11988ca0-6685-11eb-3bd9-99d05cbfd720
+function quadratic_interpolation_optimization(a, b, c, objective_function; N = 5)
+	F_a = objective_function(a)
+	F_b = objective_function(b)
+	F_c = objective_function(c)
+	
+	a_current = a
+	b_current = b
+	c_current = c
+	
+	plot()
+	add_himmelblau_to_existing_plot(a:0.01:b)
+	
+	for i in 1:N
+		
+		# Generate x_star guess
+		p, q, r = find_quadratic_coefs([a_current, b_current, c_current], [F_a, F_b, F_c])
+		x_star_candidate, vertex_parabola_y = find_vertex_of_parabola(p, q, r)
 
+		# Do a function eval
+		F_x = objective_function(x_star_candidate)
+
+		scatter!([c_current], [F_c], label="c-point")
+		xs_to_plot = a_current:0.01:b_current
+		plot!(xs_to_plot, p*xs_to_plot.^2 .+ q*xs_to_plot .+ r, label="parabola")
+		
+		if x_star_candidate > c_current && F_x < F_c
+			a_current, b_current, c_current = c_current, b_current, x_star_candidate
+			F_a, F_c = F_c, F_x
+			println("1")
+		elseif x_star_candidate > c_current && F_x > F_c
+			a_current, b_current, c_current = a_current, x_star_candidate, c_current
+			F_b = F_x
+			println("2")
+		elseif x_star_candidate < c_current && F_x > F_c
+			a_current, b_current, c_current = x_star_candidate, b_current, c_current
+			F_a = F_x
+			println("3")
+		else
+			a_current, b_current, c_current = a_current, c_current, x_star_candidate
+			F_b, F_c = F_c, F_x
+			println("4")
+		end
+	end
+	
+	return plot!()
+
+end
+
+# ╔═╡ 978029d8-669e-11eb-23cc-b9a1f3cfbe31
+quadratic_interpolation_optimization(-6, 6, 0, x -> Himmelblau(x, 5.5), N = 5)
 
 # ╔═╡ Cell order:
 # ╠═1abc28f0-6516-11eb-2671-31a6fbf782e7
@@ -107,3 +156,4 @@ end
 # ╠═8193ca02-669d-11eb-361a-c3dc76953a3a
 # ╠═533b2a96-6595-11eb-2c04-0fb5b472a717
 # ╠═11988ca0-6685-11eb-3bd9-99d05cbfd720
+# ╠═978029d8-669e-11eb-23cc-b9a1f3cfbe31
