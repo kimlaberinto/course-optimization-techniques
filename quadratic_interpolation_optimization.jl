@@ -36,15 +36,15 @@ end
 # ╔═╡ 0ade54c8-6518-11eb-20cb-0b674f957dd3
 begin
 	xs = [-2, 1, 2]
-	ys = [-5, 1, 4]
+	ys = [-5, -10, 4]
 	x, y, p, q, r = interpolated_quadratic(-5, 5, xs, ys)
 
 	x_vertex, y_vertex = find_vertex_of_parabola(p, q, r)
 	
 	plot(x, y, label="Quadratic Fitting")
-	scatter!(xs, ys, label="Data")
+	scatter!(xs, ys, label="Samples")
 	#scatter!(x_vertex, y_vertex, label="Vertex")
-	scatter!([x_vertex], [y_vertex], label="Vertex")
+	scatter!([x_vertex], [y_vertex], label="Minimum of Parabola")
 end
 
 # ╔═╡ 3ba6feca-6593-11eb-16c3-8f7bdfc7733f
@@ -57,19 +57,19 @@ end
 # ╔═╡ ffe0cb68-656b-11eb-20d5-75ef4f130bd7
 #Visually looks unimodal
 begin
-	xs_func = -4:0.01:4
-	ys_func = @. Himmelblau(xs_func,5)
+	xs_func = -7:0.01:7
+	ys_func = @. Himmelblau(xs_func,5.5)
 	
 	plot(xs_func, ys_func, legend=false)
-	title!("Himmelblau(x, y=5)")
+	title!("Himmelblau(x, y=5.5)")
 	xlabel!("x")
 	ylabel!("Himmelblau function")
 end
 
 # ╔═╡ 533b2a96-6595-11eb-2c04-0fb5b472a717
 begin
-	samples_x = [-4, 0, 4]
-	samples_y = @. Himmelblau(samples_x, 5)
+	samples_x = [-6, 0, 6]
+	samples_y = @. Himmelblau(samples_x, 5.5)
 	
 	#Fit to a parabola
 	x_fitted, y_fitted, p_fit, q_fit, r_fit = interpolated_quadratic(-6, 6, samples_x, samples_y)
