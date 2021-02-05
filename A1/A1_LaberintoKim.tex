@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+
+\title{Optimization Assignment 1}
+\date{2021-02-xx}
+\author{Kim Paolo Laberinto}
+
+\begin{document}
+    \maketitle
+    \newpage
+
+    \section{Q6. (Graduate Student)}
+
+    Let $f: \mathbb{R}^4 \rightarrow \mathbb{R}$ be defined as $f(x) = \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \|$ where $A, C, E \in \mathbb{R}^{4 \times 4}$, $x,b \in \mathbb{R}^4$ and $\lambda,\gamma \in \mathbb{R}$.
+
+    Let $D$ denote the derivative operator.
+
+    \begin{align*}
+    Df(x) &= D \left( \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \| \right) \\
+    Df(x) &= D \left( \| Ax - b \| \right) +  D \left(\lambda \| Cx \| \right) +  D \left(\gamma \| Eb \| \right) \\
+    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  \gamma D \left( \| Eb \| \right) \\
+    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  0 \\
+    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) \\
+    \end{align*}
+
+    \subsection{ $D \left(\lambda \| Cx \| \right)$ }
+
+    \begin{align*}
+        D\left(\lambda \| Cx \| \right) = D \sqrt{<Cx, Cx>}
+    \end{align*}
+
+\end{document}
