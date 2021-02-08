@@ -17,14 +17,13 @@
 
     Let $f: \mathbb{R}^4 \rightarrow \mathbb{R}$ be defined as $f(x) = \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \|$ where $A, C, E \in \mathbb{R}^{4 \times 4}$, $x,b \in \mathbb{R}^4$ and $\lambda,\gamma \in \mathbb{R}$.
 
-    Let $D$ denote the derivative operator.
+    Let $D$ denote the differential operator.
 
     \begin{align*}
-    Df(x) &= D \left( \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \| \right) \\
-    Df(x) &= D \left( \| Ax - b \| \right) +  D \left(\lambda \| Cx \| \right) +  D \left(\gamma \| Eb \| \right) \\
-    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  \gamma D \left( \| Eb \| \right) \\
-    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  0 \\
-    Df(x) &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) \\
+    Df(x) &= D \left( \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \| \right) &\\
+    &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  \gamma D \left( \| Eb \| \right) & \parbox[c]{0.4\linewidth}{[using linearity of D]}\\
+    &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  0 &\\
+    &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) &\\
     \end{align*}
 
     \subsection{ $D \left(\| Cx \| \right)$ }
@@ -38,10 +37,10 @@
     \begin{align*}
         D\left( \| Ax-b \| \right) &= D \left( \sqrt{(Ax-b)^T (Ax-b)} \right) \\
         &= D \left( \left( (Ax-b)^T (Ax-b) \right)^{\frac{1}{2}} \right) \\
-        &= \frac{1}{2} \left((Ax-b)^T (Ax-b) \right)^{\frac{-1}{2}} D \left( (Ax-b)^T (Ax-b) \right) \\
+        &= \frac{1}{2} \left((Ax-b)^T (Ax-b) \right)^{\frac{-1}{2}} D \left( (Ax-b)^T (Ax-b) \right) & \parbox[c]{0.4\linewidth}{[using Chain Rule]} \\
         &= \frac{1}{2 \sqrt { (Ax-b)^T (Ax-b) }} D \left( (Ax-b)^T (Ax-b) \right) \\
         &= \frac{1}{2 \| Ax-b \| } D \left( (Ax-b)^T (Ax-b) \right) \\
-        &= \frac{ \left( (Ax-b)^T D(Ax-b) \right) + \left( (Ax-b)^T D(Ax-b) \right) }{2 \| Ax-b \| } \\
+        &= \frac{ \left( (Ax-b)^T D(Ax-b) \right) + \left( (Ax-b)^T D(Ax-b) \right) }{2 \| Ax-b \| } & \parbox[c]{0.4\linewidth}{[using Product Rule]} \\
         &= \frac{ 2(Ax-b)^T D(Ax-b) }{2 \| Ax-b \| } \\
         &= \frac{ 2(Ax-b)^T A }{2 \| Ax-b \| } \\
         &= \frac{ (Ax-b)^T A }{\| Ax-b \| }
