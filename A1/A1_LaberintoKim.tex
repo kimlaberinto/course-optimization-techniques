@@ -24,12 +24,20 @@
     &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  \gamma D \left( \| Eb \| \right) & \parbox[c]{0.4\linewidth}{[using linearity of D]}\\
     &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) +  0 &\\
     &= D \left( \| Ax - b \| \right) +  \lambda D \left( \| Cx \| \right) &\\
+    &= \frac{ (Ax-b)^T A }{\| Ax-b \| } + \lambda \frac{(Cx)^T C}{ \| Cx \| } & \parbox[c]{0.4\linewidth}{[using derivations from next sections]}
     \end{align*}
 
     \subsection{ $D \left(\| Cx \| \right)$ }
 
     \begin{align*}
-        D\left( \| Cx \| \right) = D \sqrt{<Cx, Cx>}
+        D\left( \| Cx \| \right) &= D \left( \sqrt{(Cx)^T (Cx)} \right) \\
+        &= D \left( \left( (Cx)^T (Cx) \right)^\frac{1}{2} \right) \\
+        &= \frac{1}{2} \left( (Cx)^T (Cx) \right)^\frac{-1}{2} D \left( (Cx)^T (Cx) \right) & \parbox[c]{0.4\linewidth}{[using Chain Rule]}\\
+        &= \frac{1}{2 \sqrt{ (Cx)^T (Cx) } }  D \left( (Cx)^T (Cx) \right) \\
+        &= \frac{1}{2 \| Cx \| }  D \left( (Cx)^T (Cx) \right) \\
+        &= \frac{\left( (Cx)^T D(Cx) \right) + \left( (Cx)^T D(Cx) \right) }{2 \| Cx \| } & \parbox[c]{0.4\linewidth}{[using Product Rule]}\\
+        &= \frac{2 \left( (Cx)^T D(Cx) \right)}{2 \| Cx \| } \\
+        &= \frac{(Cx)^T C}{ \| Cx \| }
     \end{align*}
 
     \subsection{ $D \left( \| Ax-b \| \right)$ }
