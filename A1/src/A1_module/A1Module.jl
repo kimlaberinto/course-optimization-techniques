@@ -3,12 +3,17 @@ module A1Module
 using LinearAlgebra #External module for taking norm
 using Memento #Invenia Module for logging
 using Printf #External module for formatting strings
+using Plots
 
 
 export SwannsBracketingMethod
 export PowellsBracketingMethod
 export GoldenSectionSearch
 export Q1LineSearch
+export Q2SteepestDescent
+export Q2_history
+
+Q2_history = []
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -307,21 +312,35 @@ function Q1LineSearch(f, d, x_0, desired_interval_size)
     return full_middle_point
 end
 
-
 function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search)
+    info(LOGGER, "Entering Q2SteepestDescent...")
+    info(LOGGER, @sprintf "Entering with x_0 = %s" x_0)
+
 
     current_point = x_0
     next_point = x_0
     steepest_descent_direction = -1 * grad_f(x_0...)
 
-    while norm(steepest_descent_direction) < 10^(-4)
+    Q2_history = []
+    push!(Q2_history, current_point)
+
+
+    while !(norm(steepest_descent_direction) < 10^(-4))
+        info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... current_point = %s" current_point)
+        info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... steepest = %s" steepest_descent_direction)
+
         next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search)
         
         steepest_descent_direction = -1 * grad_f(next_point...)
         current_point = next_point
+
+        # sleep(1)
+        push!(Q2_history, current_point)
+        debug(LOGGER, @sprintf "End of Loop Iteration... norm of grad %s" norm(steepest_descent_direction))
     end
 
-    return next_point
+    info(LOGGER, @sprintf "Exiting with next_point = %s" next_point)
+    return next_point, Q2_history
 
 end
 
