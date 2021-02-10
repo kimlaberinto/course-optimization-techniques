@@ -1,7 +1,9 @@
 module A1Module
 
+using LinearAlgebra #External module for taking norm
 using Memento #Invenia Module for logging
-using Printf
+using Printf #External module for formatting strings
+
 
 export SwannsBracketingMethod
 export PowellsBracketingMethod
@@ -293,7 +295,8 @@ function Q1LineSearch(f, d, x_0, desired_interval_size)
     one_dimensional_function = alpha -> f((x_0 .+ alpha .* d)...)
 
     swanns_step_length = 1
-    alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, x_0, swanns_step_length)
+    alpha_init = 0
+    alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
     a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
 
     a_mid = (a_l_smaller + a_u_smaller) / 2 #along line
@@ -302,6 +305,24 @@ function Q1LineSearch(f, d, x_0, desired_interval_size)
     full_middle_point = @. x_0 + a_mid * d #In full N-D space
     info(LOGGER, @sprintf "Exiting Q1LineSearch with middle point in N-D as %s" full_middle_point)
     return full_middle_point
+end
+
+
+function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search)
+
+    current_point = x_0
+    next_point = x_0
+    steepest_descent_direction = -1 * grad_f(x_0...)
+
+    while norm(steepest_descent_direction) < 10^(-4)
+        next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search)
+        
+        steepest_descent_direction = -1 * grad_f(next_point...)
+        current_point = next_point
+    end
+
+    return next_point
+
 end
 
 end
