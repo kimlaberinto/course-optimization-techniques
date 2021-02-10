@@ -5,6 +5,8 @@ using Printf
 
 export SwannsBracketingMethod
 export PowellsBracketingMethod
+export GoldenSectionSearch
+export Q1LineSearch
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -211,6 +213,95 @@ function PowellsBracketingMethod(f, a_1, delta, delta_max)
     debug(LOGGER, @sprintf "Exiting with F_a F_b F_c = %5.3f %5.3f %5.3f" F_a F_b F_c)
 
     return (a_current, b_current)
+end
+
+function GoldenSectionSearch(f, a, b, tolerance)
+    info(LOGGER, "Inside Golden Section Search")
+
+    TAU = 0.618_033_988_7
+
+    F_a = f(a)
+    F_b = f(b)
+
+    c = a + (1 - TAU)*(b - a)
+    F_c = f(c)
+
+    d = b - (1 - TAU)*(b - a)
+    F_d = f(d)
+
+    a_current = a
+    b_current = b
+    c_current = c
+    d_current = d
+
+    a_next = a
+    b_next = b
+    c_next = c
+    d_next = d
+
+    interval_size = abs(b - a)
+    while !(interval_size < tolerance)
+        a_current = a_next
+        b_current = b_next
+        c_current = c_next
+        d_current = d_next
+
+        debug(LOGGER, @sprintf "Start of loop iteration... (a_current, b_current, c_current, d_current) = (%5.3f %5.3f %5.3f %5.3f)" a_current b_current c_current d_current)
+        debug(LOGGER, @sprintf "Start of loop iteration... (F_a, F_b, F_c, F_d) = (%5.3f %5.3f %5.3f %5.3f)" F_a F_b F_c F_d)
+
+        if F_c < F_d
+            debug(LOGGER, "F_c < F_d case")
+            a_next = a_current
+            b_next = d_current
+            c_next = a_next + (1 - TAU)*(b_next - a_next)
+            d_next = c_current
+            
+            (F_a, F_b) = (F_a, F_d)
+            (F_c, F_d) = (f(c_next), F_c)
+
+        else
+            debug(LOGGER, "F_c > F_d case")
+            a_next = c_current
+            b_next = b_current
+            c_next = d_current
+            d_next = b_next - (1 - TAU)*(b_next - a_next)
+
+            (F_a, F_b) = (F_c, F_b)
+            (F_c, F_d) = (F_d, f(d_next))
+
+        end
+
+
+        interval_size = abs(b_next - a_next)
+        debug(LOGGER, @sprintf "End of loop iteration... interval_size = %5.3f" interval_size)
+    end
+
+    a_current = a_next
+    b_current = b_next
+
+    info(LOGGER, @sprintf "Exiting Golden Section Search with a_current, b_current = %5.3f %5.3f" a_current b_current)
+    info(LOGGER, @sprintf "Exiting Golden Section Search with F_a, F_b = %5.3f %5.3f" F_a F_b)
+    return (a_current, b_current)
+
+end
+
+function Q1LineSearch(f, d, x_0, desired_interval_size)
+    info(LOGGER, "Entering Q1LineSearch...")
+    info(LOGGER, @sprintf "Entering with d = %s" d)
+    info(LOGGER, @sprintf "Entering with x_0 = %s" x_0)
+
+    one_dimensional_function = alpha -> f((x_0 .+ alpha .* d)...)
+
+    swanns_step_length = 1
+    alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, x_0, swanns_step_length)
+    a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+
+    a_mid = (a_l_smaller + a_u_smaller) / 2 #along line
+    debug(LOGGER, @sprintf "a_middle %5.3f" a_mid)
+
+    full_middle_point = @. x_0 + a_mid * d #In full N-D space
+    info(LOGGER, @sprintf "Exiting Q1LineSearch with middle point in N-D as %s" full_middle_point)
+    return full_middle_point
 end
 
 end
