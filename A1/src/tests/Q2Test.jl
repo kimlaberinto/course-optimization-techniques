@@ -16,9 +16,8 @@ Memento.config!("debug")
 const ROSENBROCK_A = 1
 const ROSENBROCK_B = .1
 
-N_f_eval = 0
-N_grad_f_eval = 0
-
+N_f_eval = 1
+N_grad_f_eval = 1
 
 function rosenbrock_banana(x, y; a = ROSENBROCK_A, b = ROSENBROCK_B)
     global N_f_eval += 1
@@ -45,7 +44,9 @@ p1 = contour(x, y, log_banana, fill = false)
 plot(p1)
 title!("Log spaced contours")
 
-result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, [-3, 1], 0.00001)
+N_f_eval = 0
+N_grad_f_eval = 0
+result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, [0, 0], 1e-4)
 
 for point in history
     scatter!([point[1]], [point[2]])
