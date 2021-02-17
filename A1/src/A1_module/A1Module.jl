@@ -323,7 +323,7 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
     return full_middle_point
 end
 
-function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search)
+function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_method = "")
     info(LOGGER, "Entering Q2SteepestDescent...")
     info(LOGGER, @sprintf "Entering with x_0 = %s" x_0)
 
@@ -340,7 +340,7 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search)
         info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... current_point = %s" current_point)
         info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... steepest = %s" steepest_descent_direction)
 
-        next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search)
+        next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search; linesearch_method = linesearch_method)
         
         steepest_descent_direction = -1 * grad_f(next_point...)
         current_point = next_point

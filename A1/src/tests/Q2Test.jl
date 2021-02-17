@@ -35,18 +35,18 @@ function log_banana(x, y)
     return log(rosenbrock_banana(x, y) + 1)
 end
 
-x = -4:0.01:4
-y = -1:0.01:4
+x = -3:0.01:3
+y = -2:0.01:2
 
 X = repeat(reshape(x, 1, :), length(y), 1)
 Y = repeat(y, 1, length(x))
 p1 = contour(x, y, log_banana, fill = false)
-plot(p1, legend=false)
+plot(p1, legend=false, aspect_ratio = :equal)
 title!("Q2 Steepest Descent (log spaced contours)")
 
 N_f_eval = 0
 N_grad_f_eval = 0
-result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, [0, 0], 1e-4)
+result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, [3, -1], 1e-4;  linesearch_method = "SwannsBracketingMethod")
 
 for point in history
     scatter!([point[1]], [point[2]])
