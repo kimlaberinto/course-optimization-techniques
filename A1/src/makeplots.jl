@@ -41,3 +41,12 @@ begin
     ylims!(-2, 3)
 
 end
+
+# A way to visualize one run of Q1, need Swann's vs Powell
+# Left 
+begin
+    plot()
+    xlabel!("Alpha")
+    ylabel!("Objective Function Value")
+    title!("1D Bracket Finding - Line A - f(x0 + alpha*d)")
+end
