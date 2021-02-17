@@ -44,15 +44,15 @@
 
     \begin{align}
     L &= \sum_i (y_{\text{data}} - y_{\text{model}})^2 \\
-    L &= \sum_i (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2
+    L &= \sum_i (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2
     \end{align}
 
     We can now derive the gradient.
     \begin{align}
-    \nabla L &= \nabla \left( \sum_i (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2 \right) \\
-    \nabla L &= \sum_i \left( \nabla \left( (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2 \right) \right) \\
-    \nabla L &= \sum_i \left( 2(y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \cdot \nabla (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right) \\
-    \nabla L &= \sum_i \left( 2(y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \cdot \nabla (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right)
+    \nabla L &= \nabla \left( \sum_i (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2 \right) \\
+    \nabla L &= \sum_i \left( \nabla \left( (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2 \right) \right) \\
+    \nabla L &= \sum_i \left( 2(y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})) \cdot \nabla (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right) \\
+    \nabla L &= \sum_i \left( 2(y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})) \cdot \nabla (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right)
     \end{align}
 
     \begin{align}
