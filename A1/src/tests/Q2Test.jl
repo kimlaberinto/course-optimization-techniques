@@ -41,8 +41,8 @@ y = -1:0.01:4
 X = repeat(reshape(x, 1, :), length(y), 1)
 Y = repeat(y, 1, length(x))
 p1 = contour(x, y, log_banana, fill = false)
-plot(p1)
-title!("Log spaced contours")
+plot(p1, legend=false)
+title!("Q2 Steepest Descent (log spaced contours)")
 
 N_f_eval = 0
 N_grad_f_eval = 0

@@ -31,7 +31,7 @@ X = repeat(reshape(x, 1, :), length(y), 1)
 Y = repeat(y, 1, length(x))
 p1 = contour(x, y, log_banana, fill = false)
 plot(p1)
-title!("Log spaced contours")
+title!("Q1 Line Search Test (log spaced contours)")
 
 d = [1, 1]
 x_0 = [0.75, 0.75]
@@ -39,4 +39,5 @@ desired_interval_size = 0.1
 N_f_eval = 0
 result = Q1LineSearch(rosenbrock_banana, d, x_0, desired_interval_size)
 
-scatter!([x_0[1] result[1]], [x_0[2] result[2]])
+scatter!([x_0[1]], [x_0[2]], label="x0")
+scatter!([result[1]], [result[2]], label="Final")
