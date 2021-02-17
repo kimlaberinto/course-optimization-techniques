@@ -5,6 +5,8 @@ using Plots
 using Printf
 using Test
 
+using ForwardDiff
+
 
 includet("../A1_module/A1Module.jl")
 using .A1Module
@@ -55,6 +57,7 @@ end
 
 objective_function = params -> Q3SumSquaredError(params, TIME_DATA, Y_DATA)
 grad_objective_function = params -> Q3_Grad_SumSquaredError(params, TIME_DATA, Y_DATA)
+autodiff_grad_objective_function = params -> ForwardDiff.gradient(objective_function, params)
 
 N_f_eval = 0
 N_grad_f_eval = 0
