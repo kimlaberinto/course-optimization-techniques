@@ -292,17 +292,28 @@ function GoldenSectionSearch(f, a, b, tolerance)
 
 end
 
-function Q1LineSearch(f, d, x_0, desired_interval_size)
+function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
     info(LOGGER, "Entering Q1LineSearch...")
     info(LOGGER, @sprintf "Entering with d = %s" d)
     info(LOGGER, @sprintf "Entering with x_0 = %s" x_0)
 
     one_dimensional_function = alpha -> f((x_0 .+ alpha .* d)...)
 
-    swanns_step_length = 1
-    alpha_init = 0
-    alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
-    a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+    a_l_smaller, a_u_smaller = undef, undef
+    if linesearch_method == "SwannsBracketingMethod"
+        swanns_step_length = 1 #HARDCODED
+        alpha_init = 0 #HARDCODED
+        alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
+        a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+    elseif linesearch_method == "PowellsBracketingMethod"
+        alpha_init = 0 #HARDCODED
+        powells_delta = 1 #HARDCODED
+        powells_delta_max = 16 #HARDCODED
+        alpha_lower, alpha_upper = PowellsBracketingMethod(one_dimensional_function, alpha_init, powells_delta, powells_delta_max)
+        a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+    else
+        error(LOGGER, "Line Search Method not recognized: $linesearch_method")
+    end
 
     a_mid = (a_l_smaller + a_u_smaller) / 2 #along line
     debug(LOGGER, @sprintf "a_middle %5.3f" a_mid)
