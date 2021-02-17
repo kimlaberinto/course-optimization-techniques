@@ -13,17 +13,60 @@
     \maketitle
     \newpage
 
+    \tableofcontents
+    \newpage
+
+    \section{Q1.}
+
+    \subsection{Example 1D Optimization Trajectories}
+
+    %Play around with different starting points and directions
+    %Show trajectory in 1D show trajectory in 2D
+
+    %Incorrectly found examples
+    %Correctly found examples changing interval size
+
+    \subsection{Comparision between Swann's and Powell's Methods}
+
+    \section{Q2.}
+
+    \subsection{Example Optimization Trajectories}
+
+    \subsection{Example 1D Optimizations in Trajectory}
+
     \section{Q3.}
 
-    \subsection{Objective Function Definition}
+    \subsection{Gradient Descent}
 
-    \begin{align*}
+    \subsubsection{Objective Function Definition and Gradient Derivation}
+
+    \begin{align}
     L &= \sum_i (y_{\text{data}} - y_{\text{model}})^2 \\
-    L &= \sum_i (y_{\text{data}} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2 \\
-    \nabla L &=  
-    \end{align*}
+    L &= \sum_i (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2
+    \end{align}
+
+    We can now derive the gradient.
+    \begin{align}
+    \nabla L &= \nabla \left( \sum_i (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2 \right) \\
+    \nabla L &= \sum_i \left( \nabla \left( (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})^2 \right) \right) \\
+    \nabla L &= \sum_i \left( 2(y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \cdot \nabla (y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right) \\
+    \nabla L &= \sum_i \left( 2(y_{i} - x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \cdot \nabla (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) \right)
+    \end{align}
+
+    \begin{align}
+        \nabla (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}) = 
+            \begin{bmatrix}
+                1 \\
+                e ^ {x_4 t_i} \\
+                e ^ {x_5 t_i} \\
+                x_2 t_i e ^ {x_4 t_i} \\
+                x_3 t_i e ^{x_5 t_i} \\
+            \end{bmatrix}
+    \end{align}
 
     \subsection{Hooke-Jeeves}
+
+    \subsection{(EXTRA) Automatic Differentiation Gradient Descent}
 
     \section{Q4. (Graduate Student)}
 
@@ -48,7 +91,7 @@
 
     \subsection{Transformation between $B_1$ and $B_2$}
 
-    \subsection{D derivative operator}
+    \subsection{D Derivative Operator}
 
     \subsubsection{Proof: D is linear}
 
@@ -63,7 +106,7 @@
 
 
     \section{Q6. (Graduate Student)}
-
+    \subsection{ $Df$ derivation }
     Let $f: \mathbb{R}^4 \rightarrow \mathbb{R}$ be defined as $f(x) = \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \|$ where $A, C, E \in \mathbb{R}^{4 \times 4}$, $x,b \in \mathbb{R}^4$ and $\lambda,\gamma \in \mathbb{R}$.
 
     Let $D$ denote the differential operator.
@@ -76,7 +119,9 @@
     &= \frac{ (Ax-b)^T A }{\| Ax-b \| } + \lambda \frac{(Cx)^T C}{ \| Cx \| } & \parbox[c]{0.4\linewidth}{[using derivations from next sections]}
     \end{align*}
 
-    \subsection{ $D \left(\| Cx \| \right)$ }
+    The full derivation of $D \left( \| Ax - b \| \right)$ and $ D \left( \| Cx \| \right) $ can be found in the following sections.
+
+    \subsection{ $D \left(\| Cx \| \right)$ Derivation }
 
     \begin{align*}
         D\left( \| Cx \| \right) &= D \left( \sqrt{(Cx)^T (Cx)} \right) \\
@@ -89,7 +134,7 @@
         &= \frac{(Cx)^T C}{ \| Cx \| }
     \end{align*}
 
-    \subsection{ $D \left( \| Ax-b \| \right)$ }
+    \subsection{ $D \left( \| Ax-b \| \right)$ Derivation}
 
     \begin{align*}
         D\left( \| Ax-b \| \right) &= D \left( \sqrt{(Ax-b)^T (Ax-b)} \right) \\
@@ -102,5 +147,16 @@
         &= \frac{ 2(Ax-b)^T A }{2 \| Ax-b \| } \\
         &= \frac{ (Ax-b)^T A }{\| Ax-b \| }
     \end{align*}
+
+    \appendix
+    \section{Source Code}
+
+    \subsection{All Optimization Algorithms (A1Module.jl)}
+
+    \subsection{Plot Generation Script (makeplots.jl)}
+
+    \subsection{(EXTRA) Automatic Differentiation for Gradient}
+
+    
 
 \end{document}
