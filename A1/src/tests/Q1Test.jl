@@ -15,13 +15,15 @@ Memento.config!("debug")
 
 N_f_eval = 0
 
-function rosenbrock_banana(x, y; a = 1, b = .1)
+function rosenbrock_banana(input; a = 1, b = .1)
     global N_f_eval += 1
+    x = input[1]
+    y = input[2]
     return (a - x)^2 + 100 * b * (y - x^2)^2
 end
 
 function log_banana(x, y)
-    return log(rosenbrock_banana(x, y) + 1)
+    return log(rosenbrock_banana([x, y]) + 1)
 end
 
 x = 0:0.01:2

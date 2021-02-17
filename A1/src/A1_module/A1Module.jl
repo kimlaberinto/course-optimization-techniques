@@ -297,7 +297,7 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
     info(LOGGER, @sprintf "Entering with d = %s" d)
     info(LOGGER, @sprintf "Entering with x_0 = %s" x_0)
 
-    one_dimensional_function = alpha -> f((x_0 .+ alpha .* d)...)
+    one_dimensional_function = alpha -> f((x_0 .+ alpha .* d))
 
     a_l_smaller, a_u_smaller = undef, undef
     if linesearch_method == "SwannsBracketingMethod"
@@ -330,7 +330,7 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
 
     current_point = x_0
     next_point = x_0
-    steepest_descent_direction = -1 * grad_f(x_0...)
+    steepest_descent_direction = -1 * grad_f(x_0)
 
     Q2_history = []
     push!(Q2_history, current_point)
@@ -342,7 +342,7 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
 
         next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search; linesearch_method = linesearch_method)
         
-        steepest_descent_direction = -1 * grad_f(next_point...)
+        steepest_descent_direction = -1 * grad_f(next_point)
         current_point = next_point
 
         # sleep(1)

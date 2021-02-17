@@ -19,20 +19,25 @@ const ROSENBROCK_B = .1
 N_f_eval = 1
 N_grad_f_eval = 1
 
-function rosenbrock_banana(x, y; a = ROSENBROCK_A, b = ROSENBROCK_B)
+function rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     global N_f_eval += 1
+    x = input[1]
+    y = input[2]
     return (a - x)^2 + 100 * b * (y - x^2)^2
 end
 
-function grad_rosenbrock_banana(x, y; a = ROSENBROCK_A, b = ROSENBROCK_B)
+function grad_rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     global N_grad_f_eval += 1
+    x = input[1]
+    y = input[2]
+
     grad_x = -2*a - 400*b*x*(y-x^2) + 2*x # 2*(a - x)*(-1) + (100*b)*(2)*(y-x^2)*(-2*x)
     grad_y = 200*b*(y-x^2) #(100*b)*(2)*(y-x^2)*(1)
     return [grad_x, grad_y]
 end
 
 function log_banana(x, y)
-    return log(rosenbrock_banana(x, y) + 1)
+    return log(rosenbrock_banana([x, y]) + 1)
 end
 
 x = -3:0.01:3
