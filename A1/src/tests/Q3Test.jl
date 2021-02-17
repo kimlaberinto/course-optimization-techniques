@@ -58,7 +58,7 @@ grad_objective_function = params -> Q3_Grad_SumSquaredError(params, TIME_DATA, Y
 
 N_f_eval = 0
 N_grad_f_eval = 0
-result, history = Q2SteepestDescent(objective_function, grad_objective_function, [1, 1], 1e-4;  linesearch_method = "SwannsBracketingMethod")
+result, history = Q2SteepestDescent(objective_function, grad_objective_function, [.1, .1, .1, .1, .1], 1e-4;  linesearch_method = "SwannsBracketingMethod")
 
 best_params = result
 
