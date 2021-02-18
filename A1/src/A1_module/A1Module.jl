@@ -116,12 +116,17 @@ function PowellsBracketingMethod(f, a_1, delta, delta_max)
     b_next = b_1
     c_next = c_1
 
+    history = History(Tuple{Float64, Float64, Float64})
+    push!(history, 0, convert(Tuple{Float64, Float64, Float64}, (a_current, b_current, c_current)))
+
+    N_iterations = 0
     while !(F_c < F_a && F_c < F_b)
         debug(LOGGER, @sprintf "New loop iteration...")
         debug(LOGGER, @sprintf "F_a F_b F_c = %5.3f %5.3f %5.3f" F_a F_b F_c)
         a_current = a_next
         b_current = b_next
         c_current = c_next
+        N_iterations += 1
 
         debug(LOGGER, @sprintf "a_current, b_current, c_current = [%5.3f, %5.3f, %5.3f]" a_current b_current c_current)
 
@@ -204,6 +209,8 @@ function PowellsBracketingMethod(f, a_1, delta, delta_max)
             end
         end
 
+        push!(history, N_iterations, convert(Tuple{Float64, Float64, Float64}, (a_next, b_next, c_next)))
+
         debug(LOGGER, @sprintf "a_next b_next c_next = %5.3f %5.3f %5.3f" a_next b_next c_next)
         debug(LOGGER, @sprintf "End of loop iteration...")
     end
@@ -215,7 +222,7 @@ function PowellsBracketingMethod(f, a_1, delta, delta_max)
     debug(LOGGER, @sprintf "Exiting with a_current, b_current c_current = %5.3f %5.3f %5.3f" a_current b_current c_current)
     debug(LOGGER, @sprintf "Exiting with F_a F_b F_c = %5.3f %5.3f %5.3f" F_a F_b F_c)
 
-    return (a_current, b_current)
+    return (a_current, b_current), history
 end
 
 function GoldenSectionSearch(f, a, b, tolerance)
@@ -310,8 +317,8 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
         alpha_init = 0 #HARDCODED
         powells_delta = 1 #HARDCODED
         powells_delta_max = 16 #HARDCODED
-        alpha_lower, alpha_upper = PowellsBracketingMethod(one_dimensional_function, alpha_init, powells_delta, powells_delta_max)
-        (a_l_smaller, a_u_smaller), history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        (alpha_lower, alpha_upper), powell_history = PowellsBracketingMethod(one_dimensional_function, alpha_init, powells_delta, powells_delta_max)
+        (a_l_smaller, a_u_smaller), golden_history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
     else
         error(LOGGER, "Line Search Method not recognized: $linesearch_method")
     end
