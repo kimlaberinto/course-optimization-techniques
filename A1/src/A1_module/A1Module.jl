@@ -305,13 +305,13 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
         swanns_step_length = 1 #HARDCODED
         alpha_init = 0 #HARDCODED
         alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
-        a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        (a_l_smaller, a_u_smaller), history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
     elseif linesearch_method == "PowellsBracketingMethod"
         alpha_init = 0 #HARDCODED
         powells_delta = 1 #HARDCODED
         powells_delta_max = 16 #HARDCODED
         alpha_lower, alpha_upper = PowellsBracketingMethod(one_dimensional_function, alpha_init, powells_delta, powells_delta_max)
-        a_l_smaller, a_u_smaller = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        (a_l_smaller, a_u_smaller), history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
     else
         error(LOGGER, "Line Search Method not recognized: $linesearch_method")
     end
