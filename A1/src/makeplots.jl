@@ -2,6 +2,7 @@ using Revise
 
 using Plots
 using Printf
+using LinearAlgebra
 
 includet("A1_module/A1Module.jl")
 using .A1Module
@@ -10,8 +11,10 @@ const ROSENBROCK_A = 1.0
 const ROSENBROCK_B = 0.1
 
 N_f_eval = 0
-function rosenbrock_banana(x, y; a = ROSENBROCK_A, b = ROSENBROCK_B)
+function rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     global N_f_eval += 1
+    x = input[1]
+    y = input[2]
     return (a - x)^2 + 100 * b * (y - x^2)^2
 end
 
@@ -40,6 +43,83 @@ begin
     xlims!(-2, 2)
     ylims!(-2, 3)
 
+    savefig("A1/assets/AllLines.svg")
+end
+
+# Plot for Line B
+begin
+    l = @layout [a{0.45w} [b{0.2h} ; c{0.6h}; d; e]]
+
+    LINE_B_START = [-2, 2]
+    LINE_B_DIRECTION = [3, -1]
+    LINE_B_DIRECTION = LINE_B_DIRECTION / norm(LINE_B_DIRECTION)
+    B0_PLUS_ALPHA = LINE_B_START .+ 1 .* LINE_B_DIRECTION
+    OneD_LineB_function = alpha -> rosenbrock_banana(LINE_B_START .+ alpha .* LINE_B_DIRECTION)
+
+    begin
+        x_plot = -2:0.01:2
+        y_plot = -2:0.01:3
+        p1 = contour(x_plot, y_plot, rosenbrock_banana, 
+            levels = 0:5:400, 
+            fill=false, 
+            label = "Rosenbrock",
+            c=:black,
+            legend = :bottomright)
+
+        plot!([-2, 4], [2, 0], label="B", lw = 3, title="Line B Initial Bracketing")
+        scatter!([LINE_B_START[1]],[LINE_B_START[2]], label="B_0", shape=:circle, markersize = 9)
+        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label="B_0 + Delta", shape=:circle, markersize = 9)
+
+        xlims!(-2, 2)
+        ylims!(-2, 3)
+    end
+
+    #Plot 1D
+    begin
+        xs = -2:0.01:8
+        ys = @. OneD_LineB_function(xs)
+        p_1D = plot(xs,ys, legend=false, title="1D Function")
+        xlims!(p_1D, minimum(xs), maximum(xs))
+    end
+
+    #Plot 1D Log
+    begin
+        xs = -2:0.01:8
+        ys = @. log10(OneD_LineB_function(xs))
+        p_1Dlog = plot(xs,ys, legend=false, title = "Log 1D Function")
+        xlims!(p_1Dlog, minimum(xs), maximum(xs))
+    end
+
+    # Plot Powell
+    begin
+        result, history = PowellsBracketingMethod(OneD_LineB_function, 0, 1, 16)
+        println(result)
+    
+        p_powell = plot(title="Iterations for Powell")
+        for (i, interval) in enumerate(history)
+            plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+        end
+        xlims!(p_powell, minimum(xs), maximum(xs))
+        ylims!(p_powell, -1*(length(history)), 1)
+    
+    end
+
+    # Plot Swanns
+    begin
+        result, history = SwannsBracketingMethod(OneD_LineB_function, 0, 1)
+        println(result)
+    
+        p_swanns = plot(title="Iterations for Swanns")
+        for (i, interval) in enumerate(history)
+            plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+        end
+        xlims!(p_swanns, minimum(xs), maximum(xs))
+        ylims!(p_swanns, -1*(length(history)), 1)
+    
+    end
+
+    xlabel!("alpha")
+    plot(p1, p_1D, p_1Dlog, p_powell, p_swanns, layout=l, size=(800, 500))
 end
 
 # A way to visualize one run of Q1, need Swann's vs Powell
