@@ -69,3 +69,16 @@ t_bestfit = 0:0.1:9
 y_bestfit = Q3Model(t_bestfit, best_params)
 plot(t_bestfit, y_bestfit, label="Best Fit")
 scatter!(TIME_DATA, Y_DATA, label="Data Points")
+
+begin
+    is, points = get(history)
+    errors = []
+    for (i, current_params) in enumerate(history)
+        error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
+        push!(errors, error)
+    end
+    plot(is, errors, yscale=:log10, shape=:circle, markersize=3)
+    title!("Sum Squared Error vs Gradient Descent Iteration")
+    xlabel!("Number of Gradient Descent Iterations")
+    ylabel!("Sum Squared Error")
+end
