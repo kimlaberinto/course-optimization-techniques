@@ -17,9 +17,19 @@ function parabola_up(x)
     return x^2
 end
 
-# xs = -2:0.01:2
-# ys = @. parabola_up(xs)
-# plot(xs,ys)
 
-result = GoldenSectionSearch(parabola_up, -10, 10, 0.1)
+result, history = GoldenSectionSearch(parabola_up, -10, 10, 0.1)
 println(result)
+
+l = @layout [a{0.6h}; b]
+
+xs = -10:0.01:10
+ys = @. parabola_up(xs)
+p1 = plot(xs,ys)
+
+p2 = plot()
+for (i, interval) in enumerate(history)
+    plot!([interval[1], interval[2]], [-i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+end
+
+plot(p1, p2, layout=l)
