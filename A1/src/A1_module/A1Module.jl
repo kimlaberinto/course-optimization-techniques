@@ -33,6 +33,9 @@ function SwannsBracketingMethod(f, x_0, initial_step_length; magnification = 2)
     f_u = f(x_u) #upper
     f_m = f(x_0) #middle 
 
+    history = History(Tuple{Float64, Float64, Float64})
+    push!(history, 0, convert(Tuple{Float64, Float64, Float64}, (x_l, x_u, x_m)))
+
     # 4 Cases.
     # 1) Keep moving right
     # 2) Keep moving left
@@ -50,13 +53,14 @@ function SwannsBracketingMethod(f, x_0, initial_step_length; magnification = 2)
             x_u = x_u + (magnification^i) * abs(initial_step_length)
             f_u = f(x_u)
 
+            push!(history, i, convert(Tuple{Float64, Float64, Float64}, (x_l, x_u, x_m)))
             i += 1
         end
         # f_u is now higher than f_m
         # This now forms a valid bracketing interval
 
         info(LOGGER, @sprintf "Outputting x_l x_u = [%3.2f %3.2f]" x_l x_u)
-        return (x_l, x_u)
+        return (x_l, x_u), history
 
     elseif f_l <= f_m <= f_u
         debug(LOGGER, "Case 2: Keep Moving Left")
@@ -68,17 +72,18 @@ function SwannsBracketingMethod(f, x_0, initial_step_length; magnification = 2)
             x_l = x_l - (magnification^i) * abs(initial_step_length)
             f_l = f(x_l)
 
+            push!(history, i, convert(Tuple{Float64, Float64, Float64}, (x_l, x_u, x_m)))
             i += 1
         end
         # f_l is now higher than f_m
         # This forms a valid bracketing interval
         info(LOGGER, @sprintf "Outputting x_l x_u = [%3.2f %3.2f]" x_l x_u)
-        return (x_l, x_u)
+        return (x_l, x_u), history
 
     elseif f_l >= f_m <= f_u
         debug(LOGGER, "Case 3: Initial interval is bracket")
         info(LOGGER, @sprintf "Outputting x_l x_u = [%3.2f %3.2f]" x_l x_u)
-        return (x_l, x_u)
+        return (x_l, x_u), history
 
     else # 4) Error  f_l <= f_m >= f_u
         error(LOGGER, "Case 4: Error (non-unimodal)")
@@ -311,8 +316,8 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
     if linesearch_method == "SwannsBracketingMethod"
         swanns_step_length = 1 #HARDCODED
         alpha_init = 0 #HARDCODED
-        alpha_lower, alpha_upper = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
-        (a_l_smaller, a_u_smaller), history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        (alpha_lower, alpha_upper), swanns_history = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
+        (a_l_smaller, a_u_smaller), golden_history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
     elseif linesearch_method == "PowellsBracketingMethod"
         alpha_init = 0 #HARDCODED
         powells_delta = 1 #HARDCODED
