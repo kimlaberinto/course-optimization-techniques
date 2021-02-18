@@ -3,6 +3,8 @@ using Revise
 using Plots
 using Printf
 using LinearAlgebra
+using LaTeXStrings
+
 
 includet("A1_module/A1Module.jl")
 using .A1Module
@@ -46,7 +48,7 @@ begin
     savefig("A1/assets/AllLines.svg")
 end
 
-# Plot for Line B
+# Plot for Line B (Initial Bracketing)
 begin
     l = @layout [a{0.45w} [b{0.2h} ; c{0.6h}; d; e]]
 
@@ -67,8 +69,8 @@ begin
             legend = :bottomright)
 
         plot!([-2, 4], [2, 0], label="B", lw = 3, title="Line B Initial Bracketing")
-        scatter!([LINE_B_START[1]],[LINE_B_START[2]], label="B_0", shape=:circle, markersize = 9)
-        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label="B_0 + Delta", shape=:circle, markersize = 9)
+        scatter!([LINE_B_START[1]],[LINE_B_START[2]], label=L"B_0", shape=:circle, markersize = 9)
+        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label=L"B_0 + \Delta", shape=:circle, markersize = 9)
 
         xlims!(-2, 2)
         ylims!(-2, 3)
@@ -118,9 +120,14 @@ begin
     
     end
 
-    xlabel!("alpha")
+    xlabel!("Alpha (α)")
     plot(p1, p_1D, p_1Dlog, p_powell, p_swanns, layout=l, size=(800, 500))
 end
+
+# # Plot for Line B
+# begin
+#     l = @layout [ [p1 ; p2] [p3 ; p4] ]
+# end
 
 # A way to visualize one run of Q1, need Swann's vs Powell
 # Left 
