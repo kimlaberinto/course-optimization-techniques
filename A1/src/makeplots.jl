@@ -50,3 +50,13 @@ begin
     ylabel!("Objective Function Value")
     title!("1D Bracket Finding - Line A - f(x0 + alpha*d)")
 end
+
+# Objective Function vs Iteration (DRAFT)
+if false:
+    is, points = get(history)
+    yvals = @. rosenbrock_banana(points)
+    plot(is, yvals, yscale=:log10, shape=:circle, markersize=3)
+    title!("Objective Function Value vs Gradient Descent Iteration")
+    xlabel!("Number of Gradient Descent Iterations")
+    ylabel!("Rosenbrock Banana Function Value")
+end
