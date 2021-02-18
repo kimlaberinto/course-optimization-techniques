@@ -204,7 +204,6 @@ function PowellsBracketingMethod(f, a_1, delta, delta_max)
             end
         end
 
-        sleep(1)
         debug(LOGGER, @sprintf "a_next b_next c_next = %5.3f %5.3f %5.3f" a_next b_next c_next)
         debug(LOGGER, @sprintf "End of loop iteration...")
     end
@@ -340,8 +339,8 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
 
     N_iterations = 0
     while !(norm(steepest_descent_direction) < 10^(-4))
-        info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... current_point = %s" current_point)
-        info(LOGGER, @sprintf "Q2 __________ Start of Loop Iteration... steepest = %s" steepest_descent_direction)
+        info(LOGGER, @sprintf "Q2 Start of Loop Iteration... current_point = %s" current_point)
+        info(LOGGER, @sprintf "Q2 Start of Loop Iteration... steepest = %s" steepest_descent_direction)
         N_iterations += 1
 
         next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search; linesearch_method = linesearch_method)
@@ -349,7 +348,6 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
         steepest_descent_direction = -1 * grad_f(next_point)
         current_point = next_point
 
-        # sleep(1)
         push!(Q2_history, N_iterations, current_point)
         debug(LOGGER, @sprintf "End of Loop Iteration... norm of grad %s" norm(steepest_descent_direction))
     end

@@ -52,7 +52,7 @@ begin
 end
 
 # Objective Function vs Iteration (DRAFT)
-if false:
+if false
     is, points = get(history)
     yvals = @. rosenbrock_banana(points)
     plot(is, yvals, yscale=:log10, shape=:circle, markersize=3)
