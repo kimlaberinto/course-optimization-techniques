@@ -11,6 +11,7 @@ export PowellsBracketingMethod
 export GoldenSectionSearch
 export Q1LineSearch
 export Q2SteepestDescent
+export HookeJeeves
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -375,6 +376,64 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
     info(LOGGER, @sprintf "Exiting with next_point = %s" next_point)
     return next_point, Q2_history
 
+end
+
+function HookeJeeves(f, x_0, big_delta, small_delta, orthogonal_directions)
+    info(LOGGER, "Entering Hooke-Jeeves...")
+    @assert length(x_0) == length(orthogonal_directions)
+
+    x_i_array = zeros(length(x_0), length(orthogonal_directions)+1)
+
+    x_0_current = x_0
+    x_i_array[:, 1] = x_0
+
+    history = MVHistory()
+    push!(history, :x_1, 0, x_i_array[:, 1])
+    
+    iteration_number = 0
+    while !(big_delta < small_delta)
+        debug(LOGGER, "Start of Iteration Loop...")
+        iteration_number += 1
+
+        #Exploratory Moves
+        debug(LOGGER, "Performing Exploratory Moves...")
+        for (index, direction) in enumerate(orthogonal_directions)
+            x_current = x_i_array[:, index] .+ big_delta .* direction
+
+            F_x_i =  f(x_i_array[:, index])
+            if f(x_current) < F_x_i
+                x_i_array[:, index+1] = x_current
+            else
+                x_current = x_i_array[:, index] .- big_delta .* direction
+                
+                if f(x_current) < F_x_i
+                    x_i_array[:, index+1] = x_0_current
+                else
+                    x_i_array[:, index+1] = x_i_array[:, index]
+                end
+            end
+        end
+
+        # Pattern Move
+        debug(LOGGER, "Performing Pattern Move...")
+        if f(x_i_array[:, end]) < f(x_0_current)
+            x_i_array[:, 1] = x_i_array[:, end] .+ (x_i_array[:, end] .- x_0_current)
+            x_0_current = x_i_array[:, end]
+        
+        elseif x_i_array[:, 1] == x_0_current
+            big_delta = big_delta / 10.
+        
+        else
+            x_i_array[:, 1] = x_0_current
+
+        end
+
+        push!(history, :x_1, iteration_number, x_i_array[:, 1])
+        debug(LOGGER, "End of Iteration Loop...")
+    end
+
+    info(LOGGER, "Exiting Hooke-Jeeves...")
+    return x_i_array[:, 1], history
 end
 
 end
