@@ -389,6 +389,7 @@ function HookeJeeves(f, x_0, big_delta, small_delta, orthogonal_directions)
 
     history = MVHistory()
     push!(history, :x_1, 0, x_i_array[:, 1])
+    push!(history, :x_0_current, 0, x_0_current)
     
     iteration_number = 0
     while !(big_delta < small_delta)
@@ -429,6 +430,8 @@ function HookeJeeves(f, x_0, big_delta, small_delta, orthogonal_directions)
         end
 
         push!(history, :x_1, iteration_number, x_i_array[:, 1])
+        push!(history, :x_0_current, iteration_number, x_0_current)
+        push!(history, :x_end, iteration_number, x_i_array[:, end])
         debug(LOGGER, "End of Iteration Loop...")
     end
 

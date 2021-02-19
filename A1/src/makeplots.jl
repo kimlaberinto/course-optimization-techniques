@@ -468,6 +468,62 @@ begin
     end
 end
 
-# begin
-#     autodiff_grad_objective_function = params -> ForwardDiff.gradient(objective_function, params)
-# end
+begin
+    plot_HJ_lossvssteps = plot()
+    title!(plot_HJ_lossvssteps, "Loss vs Gradient Steps\nHooke-Jeeves")
+    xlabel!(plot_HJ_lossvssteps, "Hooke-Jeeves Outer-loop Iterations")
+    ylabel!(plot_HJ_lossvssteps, "Sum Squared Error")
+
+    plot_HJ_curves_all_inits = plot()
+    title!(plot_HJ_curves_all_inits, "Best Fits from Optimization\nHooke-Jeeves")
+    xlabel!(plot_HJ_curves_all_inits, "t")
+    ylabel!(plot_HJ_curves_all_inits, "y")
+    scatter!(plot_HJ_curves_all_inits, TIME_DATA, Y_DATA, label="Data Points", color=4)
+
+    init_params_array = [[0.1, 0.1, 0.1, 0.1, 0.1], [-0.1, -0.1, -0.1, -0.1, -0.1], [0.0, 0.1, -0.1, 0.0, 0.1]]
+    HJ_tolerance = 1e-2
+    for (index_param, init_params) in enumerate(init_params_array)
+
+        global N_f_eval = 0
+        global N_grad_f_eval = 0
+
+        orthogonal_directions = [[1, 0, 0, 0, 0],
+                                 [0, 1, 0, 0, 0],
+                                 [0, 0, 1, 0, 0],
+                                 [0, 0, 0, 1, 0],
+                                 [0, 0, 0, 0, 1]]
+        result, history = HookeJeeves(rosenbrock_banana, init_params, .01, HJ_tolerance, orthogonal_directions)
+        final_param_vector = result
+
+        # Plot curve
+        begin
+            t_bestfit = 0:0.02:9
+            y_bestfit = Q3Model(t_bestfit, final_param_vector)
+            plot!(plot_HJ_curves_all_inits, t_bestfit, y_bestfit, label="Best Fit using Guess $index_param", legend=:best, color=index_param)
+        end
+
+        # Plot loss curve
+        begin
+            is, points = get(history, :x_1)
+            errors = []
+            for (i, current_params) in enumerate(history, :x_1)
+                error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
+                push!(errors, error)
+            end
+            plot!(plot_HJ_lossvssteps, is, errors, yscale=:log10, lw=3, label="Initial Guess $index_param", color=index_param, shape = :circle, markersize=3)
+        end
+
+        output_file = open("A1/assets/Q3HookeJeeves_$index_param.txt", "w")
+        write(output_file, "Initial Parameter Guess for whole file: $init_params\n")
+        write(output_file, "Num Function Evals : $N_f_eval\n")
+        write(output_file, "Num Gradient Steps/Evals : $N_grad_f_eval\n")
+        write(output_file, "Final Parameter Vectors : $final_param_vector\n")
+        close(output_file)
+    end
+    savefig(plot_HJ_lossvssteps, "A1/assets/Q3HookeJeeves_LossVsSteps.svg")
+    savefig(plot_HJ_curves_all_inits, "A1/assets/Q3HookeJeeves_BestFits.svg")
+end
+
+begin
+     autodiff_grad_objective_function = params -> ForwardDiff.gradient(objective_function, params)
+end
