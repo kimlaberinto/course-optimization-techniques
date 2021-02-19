@@ -48,14 +48,14 @@ begin
 end
 
 # Function for plot file
-function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_point, alpha_minmax)
+function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_point, alpha_minmax, golden_plot_string)
     l = @layout [a{0.45w} [b{0.2h} ; c{0.6h}; d; e]]
 
     LINE_START = initial_point #Custom
     LINE_DIRECTION = (away_point .- initial_point) #custom
     LINE_DIRECTION = LINE_DIRECTION / norm(LINE_DIRECTION)
-    B0_PLUS_ALPHA = LINE_START .+ 1 .* LINE_DIRECTION
-    OneD_LineB_function = alpha -> rosenbrock_banana(LINE_START .+ alpha .* LINE_DIRECTION)
+    POINT_PLUS_ALPHA = LINE_START .+ 1 .* LINE_DIRECTION
+    OneD_function = alpha -> rosenbrock_banana(LINE_START .+ alpha .* LINE_DIRECTION)
 
     begin
         x_plot = -2:0.01:2
@@ -69,8 +69,8 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
 
         plot!([initial_point[1], away_point[1]], [initial_point[2], away_point[2]], label=letter, lw = 3, title="Line $letter Initial Bracketing")
         scatter!([LINE_START[1]],[LINE_START[2]], label="$letter Init", shape=:circle, markersize = 9)
-        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label="1 α Away", shape=:circle, markersize = 9)
-        println(B0_PLUS_ALPHA)
+        scatter!([POINT_PLUS_ALPHA[1]],[POINT_PLUS_ALPHA[2]], label="1 α Away", shape=:circle, markersize = 9)
+        println(POINT_PLUS_ALPHA)
         xlims!(-2, 2)
         ylims!(-2, 3)
     end
@@ -78,7 +78,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     #Plot 1D
     begin
         xs = alpha_minmax[1]:0.01:alpha_minmax[2]
-        ys = @. OneD_LineB_function(xs)
+        ys = @. OneD_function(xs)
         p_1D = plot(xs,ys, legend=false, title="1D Function")
         xlims!(p_1D, minimum(xs), maximum(xs))
     end
@@ -86,66 +86,96 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     #Plot 1D Log
     begin
         xs = alpha_minmax[1]:0.01:alpha_minmax[2] #Custom
-        ys = @. log10(OneD_LineB_function(xs))
+        ys = @. log10(OneD_function(xs))
         p_1Dlog = plot(xs,ys, legend=false, title = "Log10 1D Function")
         xlims!(p_1Dlog, minimum(xs), maximum(xs))
     end
 
     # Plot Powell
     begin
-        result, history = PowellsBracketingMethod(OneD_LineB_function, 0, 1, 16)
-        println(result)
+        desired_interval_size = 1e-3
+        _, powells_bracketing_history, golden_powell_history = Q1LineSearch(rosenbrock_banana, LINE_DIRECTION, LINE_START, desired_interval_size; linesearch_method = "PowellsBracketingMethod")
 
-        num_iterations_powell = length(history) 
+        num_iterations_powell = length(powells_bracketing_history) 
     
         p_powell = plot(title="$num_iterations_powell Iterations for Powell")
-        for (i, interval) in enumerate(history)
+        for (i, interval) in enumerate(powells_bracketing_history)
             plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
         end
         xlims!(p_powell, minimum(xs), maximum(xs))
-        ylims!(p_powell, -1*(length(history)), 1)
+        ylims!(p_powell, -1*(length(powells_bracketing_history)), 1)
     
     end
 
     # Plot Swanns
     begin
-        result, history = SwannsBracketingMethod(OneD_LineB_function, 0, 1)
-        println(result)
+        _, swanns_bracketing_history, golden_swanns_history  = Q1LineSearch(rosenbrock_banana, LINE_DIRECTION, LINE_START, desired_interval_size; linesearch_method = "SwannsBracketingMethod")
     
-        num_iterations_swanns = length(history) 
+        num_iterations_swanns = length(swanns_bracketing_history) 
 
         p_swanns = plot(title="$num_iterations_swanns Iterations for Swanns")
-        for (i, interval) in enumerate(history)
+        for (i, interval) in enumerate(swanns_bracketing_history)
             plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
         end
         xlims!(p_swanns, minimum(xs), maximum(xs))
-        ylims!(p_swanns, -1*(length(history)), 1)
+        ylims!(p_swanns, -1*(length(swanns_bracketing_history)), 1)
     
     end
 
     xlabel!("Alpha (α)")
     plot(p1, p_1D, p_1Dlog, p_powell, p_swanns, layout=l, size=(800, 500))
     savefig("A1/assets/$string_for_plotfile.svg")
+
+    layout_golden = @layout [a{0.2h} ; [b ; c] [d ; e]]
+
+    #Plot Golden for Powell
+    begin
+        _, initial_interval = first(golden_powell_history)
+        print("Golden Initial = $initial_interval")
+        xs = range(initial_interval[1], initial_interval[2], length=100)
+        ys = @. log10(OneD_function(xs))
+        plot_zoomed_powell  = plot(xs, ys, legend=false, title="Interval found by Powell")
+        xlims!(plot_zoomed_powell, minimum(xs), maximum(xs))
+    end
+    begin
+        num_iterations_powell_gold = length(golden_powell_history) 
+    
+        p_powell_goldensearch = plot(title="$num_iterations_powell_gold Golden Section Search (Powell)")
+        for (i, interval) in enumerate(golden_powell_history)
+            plot!([interval[1], interval[2], interval[3], interval[4]], [-i, -i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+        end
+        xlims!(p_powell_goldensearch, minimum(xs), maximum(xs))
+        ylims!(p_powell_goldensearch, -1*(length(golden_powell_history)), 1)
+    end
+
+    begin
+        _, initial_interval = first(golden_swanns_history)
+        print("Golden Initial = $initial_interval")
+        xs = range(initial_interval[1], initial_interval[2], length=100)
+        ys = @. log10(OneD_function(xs))
+        plot_zoomed_swanns  = plot(xs, ys, legend=false, title="Interval found by Swanns")
+        xlims!(plot_zoomed_swanns, minimum(xs), maximum(xs))
+    end
+    begin
+        num_iterations_powell_gold = length(golden_swanns_history) 
+    
+        p_swanns_goldensearch = plot(title="$num_iterations_powell_gold Golden Section Search (Swanns)")
+        for (i, interval) in enumerate(golden_swanns_history)
+            plot!([interval[1], interval[2], interval[3], interval[4]], [-i, -i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+        end
+        xlims!(p_swanns_goldensearch, minimum(xs), maximum(xs))
+        ylims!(p_swanns_goldensearch, -1*(length(golden_swanns_history)), 1)
+    end
+    title!(p_1Dlog, "Log10 1D Function for Line $letter")
+    plot(p_1Dlog, plot_zoomed_powell, p_powell_goldensearch, plot_zoomed_swanns, p_swanns_goldensearch, layout=layout_golden, size=(800, 500))
+    savefig("A1/assets/$golden_plot_string.svg")
 end
 
+# Block for Q1 Plots
 begin
-    make_bracketing_plot("LineA_initialbracketing", "A", [0, -2], [2, 4], [-2, 8])
-    make_bracketing_plot("LineB_initialbracketing", "B", [-2, 2], [4, 0], [-2, 8])
-    make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8])
-end
-
-# # Plot for Line B
-# begin
-#     l = @layout [ [p1 ; p2] [p3 ; p4] ]
-# end
-
-# A way to visualize one run of Q1, need Swann's vs Powell
-# Left 
-begin
-    plot()
-    xlabel!("Alpha")
-    ylabel!("Objective Function Value")
-    title!("1D Bracket Finding - Line A - f(x0 + alpha*d)")
+    make_bracketing_plot("LineA_initialbracketing", "A", [0, -2], [2, 4], [-2, 8], "LineA_GoldenComparison")
+    make_bracketing_plot("LineB_initialbracketing", "B", [-2, 2], [4, 0], [-2, 8], "LineB_GoldenComparison")
+    make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8], "LineC_GoldenComparison")
 end
 
 # Objective Function vs Iteration (DRAFT)

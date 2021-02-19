@@ -254,8 +254,8 @@ function GoldenSectionSearch(f, a, b, tolerance)
     c_next = c
     d_next = d
 
-    history = History(Tuple{Float64, Float64})
-    push!(history, 0, convert(Tuple{Float64, Float64}, (a_current, b_current)))
+    history = History(Tuple{Float64, Float64, Float64, Float64})
+    push!(history, 0, convert(Tuple{Float64, Float64, Float64, Float64}, (a_current, b_current, c_current, d_current)))
 
     N_iterations = 0
     interval_size = abs(b - a)
@@ -291,13 +291,15 @@ function GoldenSectionSearch(f, a, b, tolerance)
 
         end
 
-        push!(history, N_iterations, convert(Tuple{Float64, Float64}, (a_next, b_next)))
+        push!(history, N_iterations, convert(Tuple{Float64, Float64, Float64, Float64}, (a_next, b_next, c_next, d_next)))
         interval_size = abs(b_next - a_next)
         debug(LOGGER, @sprintf "End of loop iteration... interval_size = %5.3f" interval_size)
     end
 
     a_current = a_next
     b_current = b_next
+    c_current = c_next
+    d_current = d_next
 
     info(LOGGER, @sprintf "Exiting Golden Section Search with a_current, b_current = %5.3f %5.3f" a_current b_current)
     info(LOGGER, @sprintf "Exiting Golden Section Search with F_a, F_b = %5.3f %5.3f" F_a F_b)

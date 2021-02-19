@@ -29,7 +29,7 @@ p1 = plot(xs,ys)
 
 p2 = plot()
 for (i, interval) in enumerate(history)
-    plot!([interval[1], interval[2]], [-i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
+    plot!([interval[1], interval[2], interval[3], interval[4]], [-i, -i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
 end
 
 plot(p1, p2, layout=l)
