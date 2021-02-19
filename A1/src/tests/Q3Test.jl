@@ -71,9 +71,9 @@ plot(t_bestfit, y_bestfit, label="Best Fit")
 scatter!(TIME_DATA, Y_DATA, label="Data Points")
 
 begin
-    is, points = get(history)
+    is, points = get(history, :Nd_point)
     errors = []
-    for (i, current_params) in enumerate(history)
+    for (i, current_params) in enumerate(history, :Nd_point)
         error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
         push!(errors, error)
     end

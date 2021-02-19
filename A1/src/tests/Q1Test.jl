@@ -42,12 +42,12 @@ scatter!([x_0[1]], [x_0[2]], label="x0")
 
 
 N_f_eval = 0
-result = Q1LineSearch(rosenbrock_banana, d, x_0, desired_interval_size; linesearch_method = "SwannsBracketingMethod")
+result, _, _ = Q1LineSearch(rosenbrock_banana, d, x_0, desired_interval_size; linesearch_method = "SwannsBracketingMethod")
 scatter!([result[1]], [result[2]], label="Final (Swanns)")
 println("Swanns Result is $result, in N_f_eval=$N_f_eval")
 
 N_f_eval = 0
-result = Q1LineSearch(rosenbrock_banana, d, x_0, desired_interval_size; linesearch_method = "PowellsBracketingMethod")
+result, _, _ = Q1LineSearch(rosenbrock_banana, d, x_0, desired_interval_size; linesearch_method = "PowellsBracketingMethod")
 scatter!([result[1]], [result[2]], label="Final (Powells)")
 println("Powells Result is $result, in N_f_eval=$N_f_eval")
 

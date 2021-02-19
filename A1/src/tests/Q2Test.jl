@@ -54,7 +54,7 @@ N_grad_f_eval = 0
 result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, [3, -1], 1e-4;  linesearch_method = "SwannsBracketingMethod")
 
 prev_point = undef
-for (i, point) in enumerate(history)
+for (i, point) in enumerate(history, :Nd_point)
     #scatter!([point[1]], [point[2]])
     if i > 0
         plot!([point[1],prev_point[1]], [point[2],prev_point[2]], shape = :circle, markersize = 3)

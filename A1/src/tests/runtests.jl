@@ -16,5 +16,5 @@ t = @elapsed include("Q1Test.jl")
 println("done (took $t seconds). \n")
 
 println("Running Q2Test.jl...")
-t = @elapsed include("Q1Test.jl")
+t = @elapsed include("Q2Test.jl")
 println("done (took $t seconds). \n")

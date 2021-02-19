@@ -312,18 +312,22 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
 
     one_dimensional_function = alpha -> f((x_0 .+ alpha .* d))
 
+    bracketing_history = undef
+    golden_history = undef
     a_l_smaller, a_u_smaller = undef, undef
     if linesearch_method == "SwannsBracketingMethod"
         swanns_step_length = 1 #HARDCODED
         alpha_init = 0 #HARDCODED
         (alpha_lower, alpha_upper), swanns_history = SwannsBracketingMethod(one_dimensional_function, alpha_init, swanns_step_length)
         (a_l_smaller, a_u_smaller), golden_history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        bracketing_history = swanns_history
     elseif linesearch_method == "PowellsBracketingMethod"
         alpha_init = 0 #HARDCODED
         powells_delta = 1 #HARDCODED
         powells_delta_max = 16 #HARDCODED
         (alpha_lower, alpha_upper), powell_history = PowellsBracketingMethod(one_dimensional_function, alpha_init, powells_delta, powells_delta_max)
         (a_l_smaller, a_u_smaller), golden_history = GoldenSectionSearch(one_dimensional_function, alpha_lower, alpha_upper, desired_interval_size)
+        bracketing_history = powell_history
     else
         error(LOGGER, "Line Search Method not recognized: $linesearch_method")
     end
@@ -333,7 +337,7 @@ function Q1LineSearch(f, d, x_0, desired_interval_size; linesearch_method = "")
 
     full_middle_point = @. x_0 + a_mid * d #In full N-D space
     info(LOGGER, @sprintf "Exiting Q1LineSearch with middle point in N-D as %s" full_middle_point)
-    return full_middle_point
+    return full_middle_point, bracketing_history, golden_history
 end
 
 function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_method = "")
@@ -346,8 +350,8 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
     next_point = x_0
     steepest_descent_direction = -1 * grad_f(x_0)
 
-    Q2_history = History(Array{Float64, 1})
-    push!(Q2_history, 0, current_point)
+    Q2_history = MVHistory()
+    push!(Q2_history, :Nd_point, 0, current_point)
 
     N_iterations = 0
     while !(norm(steepest_descent_direction) < 10^(-4))
@@ -355,12 +359,14 @@ function Q2SteepestDescent(f, grad_f, x_0, tolerance_for_1D_search; linesearch_m
         info(LOGGER, @sprintf "Q2 Start of Loop Iteration... steepest = %s" steepest_descent_direction)
         N_iterations += 1
 
-        next_point = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search; linesearch_method = linesearch_method)
+        next_point, bracketing_history, golden_history = Q1LineSearch(f, steepest_descent_direction, current_point, tolerance_for_1D_search; linesearch_method = linesearch_method)
         
         steepest_descent_direction = -1 * grad_f(next_point)
         current_point = next_point
 
-        push!(Q2_history, N_iterations, current_point)
+        push!(Q2_history, :Nd_point, N_iterations, current_point)
+        push!(Q2_history, :bracketing_history, N_iterations, bracketing_history)
+        push!(Q2_history, :golden_history, N_iterations, golden_history)
         debug(LOGGER, @sprintf "End of Loop Iteration... norm of grad %s" norm(steepest_descent_direction))
     end
 
