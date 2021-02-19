@@ -13,6 +13,8 @@ const ROSENBROCK_A = 1.0
 const ROSENBROCK_B = 0.1
 
 N_f_eval = 0
+N_grad_f_eval = 0
+
 function rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     global N_f_eval += 1
     x = input[1]
@@ -20,6 +22,15 @@ function rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     return (a - x)^2 + 100 * b * (y - x^2)^2
 end
 
+function grad_rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
+    global N_grad_f_eval += 1
+    x = input[1]
+    y = input[2]
+
+    grad_x = -2*a - 400*b*x*(y-x^2) + 2*x # 2*(a - x)*(-1) + (100*b)*(2)*(y-x^2)*(-2*x)
+    grad_y = 200*b*(y-x^2) #(100*b)*(2)*(y-x^2)*(1)
+    return [grad_x, grad_y]
+end
 
 begin 
     x_plot = -2:0.01:2
@@ -178,12 +189,125 @@ begin
     make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8], "LineC_GoldenComparison")
 end
 
-# Objective Function vs Iteration (DRAFT)
-if false
-    is, points = get(history)
-    yvals = @. rosenbrock_banana(points)
-    plot(is, yvals, yscale=:log10, shape=:circle, markersize=3)
-    title!("Objective Function Value vs Gradient Descent Iteration")
-    xlabel!("Number of Gradient Descent Iterations")
-    ylabel!("Rosenbrock Banana Function Value")
+
+# Block for Q2 Plots
+begin
+    x_plot = -2:0.01:2
+    y_plot = -2:0.01:3
+
+    plot_Q2_swanns = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
+        levels = 0:5:400, 
+        fill=false, 
+        label = "Rosenbrock",
+        c=:black,
+        legend = :bottomright)
+    plot_Q2_powells = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
+        levels = 0:5:400, 
+        fill=false, 
+        label = "Rosenbrock",
+        c=:black,
+        legend = :bottomright)
+
+    plot_Q2_swanns_lowtol = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
+        levels = 0:5:400, 
+        fill=false, 
+        label = "Rosenbrock",
+        c=:black,
+        legend = :bottomright)
+    plot_Q2_powells_lowtol = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
+        levels = 0:5:400, 
+        fill=false, 
+        label = "Rosenbrock",
+        c=:black,
+        legend = :bottomright)
+
+    plot_Q2_loss_vs_iter_swanns = plot()
+    plot_Q2_loss_vs_iter_powells = plot()
+    plot_Q2_loss_vs_iter_swanns_lowtol = plot()
+    plot_Q2_loss_vs_iter_powells_lowtol = plot()
+
+    N_f_eval = 0
+    N_grad_f_eval = 0
+    tolerance = 1e-4
+    low_tolerance = 1e-2
+    points = [[-2, -2], [-1.5, 1.5], [-1, 3], [-0.5, -1.5], [2, 2]]
+    labels = ["D", "E", "F", "G", "H"]
+    for (i, (init_point, descent_label)) in enumerate(zip(points, labels))
+        result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, init_point, tolerance;  linesearch_method = "SwannsBracketingMethod")
+
+        _, all_points = get(history, :Nd_point)
+        all_points = transpose(hcat(all_points...))
+        plot!(plot_Q2_swanns, all_points[:, 1], all_points[:, 2], label = descent_label, shape=:circle, markersize = 3, lw=3, color=i)
+        
+        iterations, all_points = get(history, :Nd_point)
+        loss = []
+        for point2d in all_points
+            push!(loss, rosenbrock_banana(point2d))
+        end
+        plot!(plot_Q2_loss_vs_iter_swanns, iterations, loss, label = descent_label, lw=3, color=i)
+    end
+    title!(plot_Q2_swanns, "Gradient Descent\nSwanns")
+    title!(plot_Q2_loss_vs_iter_swanns, "Obj. Func. Progression\nSwanns")
+
+    for (i, (init_point, descent_label)) in enumerate(zip(points, labels))
+        result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, init_point, tolerance;  linesearch_method = "PowellsBracketingMethod")
+
+        _, all_points = get(history, :Nd_point)
+        all_points = transpose(hcat(all_points...))
+        plot!(plot_Q2_powells, all_points[:, 1], all_points[:, 2], label = descent_label, shape=:circle, markersize = 3, lw=3, color=i)
+    
+        iterations, all_points = get(history, :Nd_point)
+        loss = []
+        for point2d in all_points
+            push!(loss, rosenbrock_banana(point2d))
+        end
+        plot!(plot_Q2_loss_vs_iter_powells, iterations, loss, label = descent_label, lw=3, color=i)
+    end
+    title!(plot_Q2_powells, "Gradient Descent\nPowells")
+    title!(plot_Q2_loss_vs_iter_powells, "Obj. Func. Progression\nPowell")
+
+    for (i, (init_point, descent_label)) in enumerate(zip(points, labels))
+        result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, init_point, low_tolerance;  linesearch_method = "SwannsBracketingMethod")
+
+        _, all_points = get(history, :Nd_point)
+        all_points = transpose(hcat(all_points...))
+        plot!(plot_Q2_swanns_lowtol, all_points[:, 1], all_points[:, 2], label = descent_label, shape=:circle, markersize = 3, lw=3, color=i)
+    
+        iterations, all_points = get(history, :Nd_point)
+        loss = []
+        for point2d in all_points
+            push!(loss, rosenbrock_banana(point2d))
+        end
+        plot!(plot_Q2_loss_vs_iter_swanns_lowtol, iterations, loss, label = descent_label, lw=3, color=i)
+    end
+    title!(plot_Q2_swanns_lowtol, "Gradient Descent (low tol.)\nSwanns")
+    title!(plot_Q2_loss_vs_iter_swanns_lowtol, "Obj. Func. Progression\nSwanns (low tol.)")
+
+    for (i, (init_point, descent_label)) in enumerate(zip(points, labels))
+        result, history = Q2SteepestDescent(rosenbrock_banana, grad_rosenbrock_banana, init_point, low_tolerance;  linesearch_method = "PowellsBracketingMethod")
+
+        _, all_points = get(history, :Nd_point)
+        all_points = transpose(hcat(all_points...))
+        plot!(plot_Q2_powells_lowtol, all_points[:, 1], all_points[:, 2], label = descent_label, shape=:circle, markersize = 3, lw=3, color=i)
+        
+        iterations, all_points = get(history, :Nd_point)
+        loss = []
+        for point2d in all_points
+            push!(loss, rosenbrock_banana(point2d))
+        end
+        plot!(plot_Q2_loss_vs_iter_powells_lowtol, iterations, loss, label = descent_label, lw=3, color=i)
+    end
+    title!(plot_Q2_powells_lowtol, "Gradient Descent (low tol.)\nPowells")
+    title!(plot_Q2_loss_vs_iter_powells_lowtol, "Obj. Func. Progression\nPowells (low tol.)")
+
+    layout_Q2 =  @layout [a b; c d]
+    plot(plot_Q2_swanns, plot_Q2_powells, plot_Q2_swanns_lowtol, plot_Q2_powells_lowtol, layout = layout_Q2, size=(1000, 1000))
+    savefig("A1/assets/Q2_stepsvisualized.svg")
+
+    layout_Q2_loss_vs_steps = @layout [a b; c d]
+    plot(plot_Q2_loss_vs_iter_swanns, plot_Q2_loss_vs_iter_powells, plot_Q2_loss_vs_iter_swanns_lowtol, plot_Q2_loss_vs_iter_powells_lowtol, layout = layout_Q2_loss_vs_steps, legend=true, size=(650, 650))
+    plot!(yscale=:log10)
+    xlabel!("Number of Gradient Steps")
+    ylabel!("Objective Function Value (log scale)")
+    savefig("A1/assets/Q2_loss_vs_steps.svg")
 end
