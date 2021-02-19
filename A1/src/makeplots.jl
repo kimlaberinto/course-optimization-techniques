@@ -1,13 +1,13 @@
 using Revise
 
-using Plots
-using Printf
-using LinearAlgebra
-using LaTeXStrings
-
+using ForwardDiff # Library for Extra Plot - Calculating Gradients and Hessians Automatically from Code (not symbolic!)
+using Plots # Library for plotting
+using Printf # Library for formatting strings
+using LinearAlgebra # Library for calculating norm and linear algebra
+using LaTeXStrings # Library for supporting LaTeX symbols in strings
 
 includet("A1_module/A1Module.jl")
-using .A1Module
+using .A1Module # Custom Library written for Assignment. Written by Kim Laberinto
 
 const ROSENBROCK_A = 1.0
 const ROSENBROCK_B = 0.1
@@ -504,7 +504,7 @@ begin
 
         # Plot loss curve
         begin
-            is, points = get(history, :x_1)
+            is, _ = get(history, :x_1)
             errors = []
             for (i, current_params) in enumerate(history, :x_1)
                 error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
@@ -525,5 +525,65 @@ begin
 end
 
 begin
-     autodiff_grad_objective_function = params -> ForwardDiff.gradient(objective_function, params)
+    function autodiff_grad_objective_function(params)
+        global N_grad_f_eval += 1
+        return ForwardDiff.gradient(objective_function, params)
+    end
+
+    plot_loss_manual_vs_autodiff = plot()
+    init_params = [0.1, 0.1, 0.1, 0.1, 0.1]
+    tol = 1e-2
+    title!(plot_loss_manual_vs_autodiff, "Manual vs Auto-Diff Gradient Descent\nInitial Parameters = $init_params")
+    xlabel!(plot_loss_manual_vs_autodiff, "Number of Gradient Descent Iterations")
+    ylabel!(plot_loss_manual_vs_autodiff, "Sum Squared Error")
+    begin
+        global N_f_eval = 0
+        global N_grad_f_eval = 0
+        result, history = Q2SteepestDescent(objective_function, grad_objective_function, init_params, tol;  linesearch_method = "SwannsBracketingMethod")
+        output_num_eval_manual = N_f_eval
+        output_num_grad_eval_manual = N_grad_f_eval
+        output_result_manual = result
+
+        is, points = get(history, :Nd_point)
+        errors = []
+        for (i, current_params) in enumerate(history, :Nd_point)
+            error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
+            push!(errors, error)
+        end
+        plot!(plot_loss_manual_vs_autodiff, is, errors, yscale=:log10, lw=3, label="Manual Programming")
+
+        
+    end
+
+    begin
+        global N_f_eval = 0
+        global N_grad_f_eval = 0
+        _, history = Q2SteepestDescent(objective_function, autodiff_grad_objective_function, init_params, tol;  linesearch_method = "SwannsBracketingMethod")
+        output_num_eval_autodiff = N_f_eval
+        output_num_grad_eval_autodiff = N_grad_f_eval
+        output_result_autodiff = result
+
+        is, points = get(history, :Nd_point)
+        errors = []
+        for (i, current_params) in enumerate(history, :Nd_point)
+            error = Q3SumSquaredError(current_params, TIME_DATA, Y_DATA)
+            push!(errors, error)
+        end
+        plot!(plot_loss_manual_vs_autodiff, is, errors, yscale=:log10, lw=3, label="Automatic Differentiation")
+    end
+
+    output_file = open("A1/assets/Q3_Autodiff_Comparison.txt", "w")
+    write(output_file, "Initial Parameter Guess for whole file: $init_params\n")
+    write(output_file, "Tolerance: $tol\n")
+    write(output_file, "\n")
+    write(output_file, "Num Function Evals for Manual : $output_num_eval_manual\n")
+    write(output_file, "Num Gradient Steps/Evals for Manual : $output_num_grad_eval_manual\n")
+    write(output_file, "Final Parameter Vectors for Manual: $output_result_manual\n")
+    write(output_file, "\n")
+    write(output_file, "Num Function Evals for Autodiff : $output_num_eval_autodiff\n")
+    write(output_file, "Num Gradient Steps/Evals for Autodiff : $output_num_grad_eval_autodiff\n")
+    write(output_file, "Final Parameter Vectors Autodiff : $output_result_autodiff\n")
+    close(output_file)
+
+    savefig(plot_loss_manual_vs_autodiff, "A1/assets/Q3_Autodiff_Comparison_LossVsSteps.svg")
 end

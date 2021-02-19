@@ -1,0 +1,10 @@
+Initial Parameter Guess for whole file: [0.1, 0.1, 0.1, 0.1, 0.1]
+Tolerance: 0.01
+
+Num Function Evals for Manual : 24643
+Num Gradient Steps/Evals for Manual : 1298
+Final Parameter Vectors for Manual: [1.0757534371550312, 0.3372997057638715, 0.3372997057638715, -0.16333067225363648, -0.16333067225363648]
+
+Num Function Evals for Autodiff : 25941
+Num Gradient Steps/Evals for Autodiff : 1298
+Final Parameter Vectors Autodiff : [1.0757534371550312, 0.3372997057638715, 0.3372997057638715, -0.16333067225363648, -0.16333067225363648]
