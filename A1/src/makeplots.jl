@@ -180,6 +180,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     end
     title!(p_1Dlog, "Log10 1D Function for Line $letter")
     plot(p_1Dlog, plot_zoomed_powell, p_powell_goldensearch, plot_zoomed_swanns, p_swanns_goldensearch, layout=layout_golden, size=(800, 500))
+    xlabel!("Alpha (α)")
     savefig("A1/assets/$golden_plot_string.svg")
 end
 
@@ -378,8 +379,8 @@ begin
 
         for (method, simple_method_name) in zip(methods_array, method_simple_name_array)
             for (index_tol, tol) in enumerate(tolerances_array)
-                N_f_eval = 0
-                N_grad_f_eval = 0
+                global N_f_eval = 0
+                global N_grad_f_eval = 0
                 result, history = Q2SteepestDescent(objective_function, grad_objective_function, init_params, tol;  linesearch_method = "SwannsBracketingMethod")
 
                 push!(outputs_N_f_eval, N_f_eval)
