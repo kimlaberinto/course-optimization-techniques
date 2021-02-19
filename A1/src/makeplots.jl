@@ -28,7 +28,7 @@ begin
         levels = 0:5:400, 
         fill=false, 
         label = "Rosenbrock",
-        c=cgrad(:thermal, scale=:exp, rev=false),
+        c=:black,
         aspect_ratio = :equal,
         size = (600, 600),
         legend = :bottomright)
@@ -37,8 +37,7 @@ begin
 
     plot!([0, 2], [-2, 4], label="A", lw = 3)
     plot!([-2, 4], [2, 0], label="B", lw = 3)
-    plot!([-2, 2], [-1, 0], label="C", lw = 3)
-    plot!([-2, 0], [0, 3], label="D", lw = 3)
+    plot!([-2, 2], [-2, 3], label="C", lw = 3)
 
     scatter!([1], [1], label="Global Min", shape = :diamond, markersize = 10)
 
@@ -54,9 +53,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
 
     LINE_START = initial_point #Custom
     LINE_DIRECTION = (away_point .- initial_point) #custom
-    println("$initial_point $LINE_DIRECTION")
     LINE_DIRECTION = LINE_DIRECTION / norm(LINE_DIRECTION)
-    println("$initial_point $LINE_DIRECTION")
     B0_PLUS_ALPHA = LINE_START .+ 1 .* LINE_DIRECTION
     OneD_LineB_function = alpha -> rosenbrock_banana(LINE_START .+ alpha .* LINE_DIRECTION)
 
@@ -90,7 +87,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     begin
         xs = alpha_minmax[1]:0.01:alpha_minmax[2] #Custom
         ys = @. log10(OneD_LineB_function(xs))
-        p_1Dlog = plot(xs,ys, legend=false, title = "Log 1D Function")
+        p_1Dlog = plot(xs,ys, legend=false, title = "Log10 1D Function")
         xlims!(p_1Dlog, minimum(xs), maximum(xs))
     end
 
@@ -98,8 +95,10 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     begin
         result, history = PowellsBracketingMethod(OneD_LineB_function, 0, 1, 16)
         println(result)
+
+        num_iterations_powell = length(history) 
     
-        p_powell = plot(title="Iterations for Powell")
+        p_powell = plot(title="$num_iterations_powell Iterations for Powell")
         for (i, interval) in enumerate(history)
             plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
         end
@@ -113,7 +112,9 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
         result, history = SwannsBracketingMethod(OneD_LineB_function, 0, 1)
         println(result)
     
-        p_swanns = plot(title="Iterations for Swanns")
+        num_iterations_swanns = length(history) 
+
+        p_swanns = plot(title="$num_iterations_swanns Iterations for Swanns")
         for (i, interval) in enumerate(history)
             plot!([interval[1], interval[2], interval[3]], [-i, -i, -i], label="$i", shape=:circle, markersize=4, ytick=[], legend=false)
         end
@@ -128,7 +129,9 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
 end
 
 begin
+    make_bracketing_plot("LineA_initialbracketing", "A", [0, -2], [2, 4], [-2, 8])
     make_bracketing_plot("LineB_initialbracketing", "B", [-2, 2], [4, 0], [-2, 8])
+    make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8])
 end
 
 # # Plot for Line B
