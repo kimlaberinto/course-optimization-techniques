@@ -32,6 +32,7 @@ function grad_rosenbrock_banana(input; a = ROSENBROCK_A, b = ROSENBROCK_B)
     return [grad_x, grad_y]
 end
 
+# Block to plot the "All lines" plot for Q1
 begin 
     x_plot = -2:0.01:2
     y_plot = -2:0.01:3
@@ -188,7 +189,6 @@ begin
     make_bracketing_plot("LineB_initialbracketing", "B", [-2, 2], [4, 0], [-2, 8], "LineB_GoldenComparison")
     make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8], "LineC_GoldenComparison")
 end
-
 
 # Block for Q2 Plots
 begin
