@@ -24,7 +24,7 @@ end
 begin 
     x_plot = -2:0.01:2
     y_plot = -2:0.01:3
-    contour(x_plot, y_plot, rosenbrock_banana, 
+    contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
         levels = 0:5:400, 
         fill=false, 
         label = "Rosenbrock",
@@ -48,37 +48,39 @@ begin
     savefig("A1/assets/AllLines.svg")
 end
 
-# Plot for Line B (Initial Bracketing)
-begin
+# Function for plot file
+function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_point, alpha_minmax)
     l = @layout [a{0.45w} [b{0.2h} ; c{0.6h}; d; e]]
 
-    LINE_B_START = [-2, 2]
-    LINE_B_DIRECTION = [3, -1]
-    LINE_B_DIRECTION = LINE_B_DIRECTION / norm(LINE_B_DIRECTION)
-    B0_PLUS_ALPHA = LINE_B_START .+ 1 .* LINE_B_DIRECTION
-    OneD_LineB_function = alpha -> rosenbrock_banana(LINE_B_START .+ alpha .* LINE_B_DIRECTION)
+    LINE_START = initial_point #Custom
+    LINE_DIRECTION = (away_point .- initial_point) #custom
+    println("$initial_point $LINE_DIRECTION")
+    LINE_DIRECTION = LINE_DIRECTION / norm(LINE_DIRECTION)
+    println("$initial_point $LINE_DIRECTION")
+    B0_PLUS_ALPHA = LINE_START .+ 1 .* LINE_DIRECTION
+    OneD_LineB_function = alpha -> rosenbrock_banana(LINE_START .+ alpha .* LINE_DIRECTION)
 
     begin
         x_plot = -2:0.01:2
         y_plot = -2:0.01:3
-        p1 = contour(x_plot, y_plot, rosenbrock_banana, 
+        p1 = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
             levels = 0:5:400, 
             fill=false, 
             label = "Rosenbrock",
             c=:black,
             legend = :bottomright)
 
-        plot!([-2, 4], [2, 0], label="B", lw = 3, title="Line B Initial Bracketing")
-        scatter!([LINE_B_START[1]],[LINE_B_START[2]], label=L"B_0", shape=:circle, markersize = 9)
-        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label=L"B_0 + \Delta", shape=:circle, markersize = 9)
-
+        plot!([initial_point[1], away_point[1]], [initial_point[2], away_point[2]], label=letter, lw = 3, title="Line $letter Initial Bracketing")
+        scatter!([LINE_START[1]],[LINE_START[2]], label="$letter Init", shape=:circle, markersize = 9)
+        scatter!([B0_PLUS_ALPHA[1]],[B0_PLUS_ALPHA[2]], label="1 α Away", shape=:circle, markersize = 9)
+        println(B0_PLUS_ALPHA)
         xlims!(-2, 2)
         ylims!(-2, 3)
     end
 
     #Plot 1D
     begin
-        xs = -2:0.01:8
+        xs = alpha_minmax[1]:0.01:alpha_minmax[2]
         ys = @. OneD_LineB_function(xs)
         p_1D = plot(xs,ys, legend=false, title="1D Function")
         xlims!(p_1D, minimum(xs), maximum(xs))
@@ -86,7 +88,7 @@ begin
 
     #Plot 1D Log
     begin
-        xs = -2:0.01:8
+        xs = alpha_minmax[1]:0.01:alpha_minmax[2] #Custom
         ys = @. log10(OneD_LineB_function(xs))
         p_1Dlog = plot(xs,ys, legend=false, title = "Log 1D Function")
         xlims!(p_1Dlog, minimum(xs), maximum(xs))
@@ -122,6 +124,11 @@ begin
 
     xlabel!("Alpha (α)")
     plot(p1, p_1D, p_1Dlog, p_powell, p_swanns, layout=l, size=(800, 500))
+    savefig("A1/assets/$string_for_plotfile.svg")
+end
+
+begin
+    make_bracketing_plot("LineB_initialbracketing", "B", [-2, 2], [4, 0], [-2, 8])
 end
 
 # # Plot for Line B
