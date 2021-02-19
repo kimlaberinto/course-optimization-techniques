@@ -191,7 +191,7 @@ begin
     make_bracketing_plot("LineC_initialbracketing", "C", [-2, -2], [2, 3], [-2, 8], "LineC_GoldenComparison")
 end
 
-# Block for Q2 Plots
+# Block for Q2 Plots - Gradient Descent
 begin
     x_plot = -2:0.01:2
     y_plot = -2:0.01:3
@@ -311,6 +311,49 @@ begin
     xlabel!("Number of Gradient Steps")
     ylabel!("Objective Function Value (log scale)")
     savefig("A1/assets/Q2_loss_vs_steps.svg")
+end
+
+# Block for Q2 Plots - HookeJeeves
+begin
+    x_plot = -2:0.01:2
+    y_plot = -2:0.01:3
+
+    plot_Q2_HJ = contour(x_plot, y_plot, (x, y) -> rosenbrock_banana([x, y]), 
+        levels = 0:5:400, 
+        fill=false, 
+        label = "Rosenbrock",
+        c=:black,
+        legend = :bottomright)
+
+    plot_Q2_loss_vs_iter_HJ = plot()
+
+    points = [[-2, -2], [-1.5, 1.5], [-1, 3], [-0.5, -1.5], [2, 2]]
+    labels = ["D", "E", "F", "G", "H"]
+    for (i, (init_point, descent_label)) in enumerate(zip(points, labels))
+        result, history = HookeJeeves(rosenbrock_banana, init_point, .2, 0.001, [[1, 0], [0, 1]])
+
+        _, all_points = get(history, :x_1)
+        all_points = transpose(hcat(all_points...))
+        plot!(plot_Q2_HJ, all_points[:, 1], all_points[:, 2], label = descent_label, shape=:circle, markersize = 3, lw=3, color=i)
+        
+        iterations, all_points = get(history, :x_1)
+        loss = []
+        for point2d in all_points
+            push!(loss, rosenbrock_banana(point2d))
+        end
+        min = minimum(loss)
+        println("Minimum ($descent_label) : $min")
+        plot!(plot_Q2_loss_vs_iter_HJ, iterations, loss, yscale = :log10, label = descent_label, lw=3, color=i, shape=:circle, markersize = 3)
+    end
+    title!(plot_Q2_HJ, "Hooke-Jeeves Steps")
+    title!(plot_Q2_loss_vs_iter_HJ, "Obj. Func. Progression\nHooke-Jeeves")
+    xlabel!(plot_Q2_loss_vs_iter_HJ, "Number of HJ Outer-loop Iterations")
+    ylabel!(plot_Q2_loss_vs_iter_HJ, "Rosenbrock Banana Function (log10)")
+
+
+    layout_Q2_HJ =  @layout [a; b]
+    plot(plot_Q2_HJ, plot_Q2_loss_vs_iter_HJ, layout = layout_Q2_HJ, size = (700, 800))
+    savefig("A1/assets/Q2_HookeJeeves_visualized.svg")
 end
 
 # Block for Q3 Plots
