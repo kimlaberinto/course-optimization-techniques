@@ -492,7 +492,7 @@ begin
                                  [0, 0, 1, 0, 0],
                                  [0, 0, 0, 1, 0],
                                  [0, 0, 0, 0, 1]]
-        result, history = HookeJeeves(rosenbrock_banana, init_params, .01, HJ_tolerance, orthogonal_directions)
+        result, history = HookeJeeves(rosenbrock_banana, init_params, .1, HJ_tolerance, orthogonal_directions)
         final_param_vector = result
 
         # Plot curve
