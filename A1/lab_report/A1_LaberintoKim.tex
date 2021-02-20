@@ -2,9 +2,14 @@
 
 \usepackage{amsfonts}
 \usepackage{amsmath}
-\usepackage{svg}
+\usepackage{svg} %For including svgs
 \svgpath{{../assets/}}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=1in]{geometry} %Change margins
+\usepackage{hyperref} %For hyperlinks in table of contents and other
+\usepackage{float} %For using H in figure
+\usepackage{subcaption} %For subfigures
+\usepackage{booktabs} %For tables
+\usepackage{multirow} %For tables
 
 \addtolength{\jot}{1em} %https://tex.stackexchange.com/questions/14679/amsmath-align-environment-row-spacing
 
@@ -19,34 +24,258 @@
     \tableofcontents
     \newpage
 
-    \section{Q1.}
+    \section{Q1. 1D Line Search on Rosenbrock Banana Function}
 
-    \subsection{Example 1D Optimization Trajectories}
+    %How in some situations powell's can shrink the
+    % How different methods for initial bracketing can select different bracketing intervals
+    % e.g. Powell's went for a smaller first hump
+    % While Swann's had a bigger interval which contained the true global min
+    \subsection{Set-up}
 
-    % All Lines.svg
+    This section of the document discusses some different observations seen in 1D Line Searches on the Rosenbrock Banana Function.
+    The equation for the Rosenbrock 2D Banana Function in shown in Eq. \ref{eq:rosenbrock_equation}. 
+    
+    \begin{equation} \label{eq:rosenbrock_equation}
+        f_{\text{rosenbrock banana}}(x, y) = (a - x)^2 + 100b(y-x^2)^2
+    \end{equation}
+    
+    In particular for this report, the 2D objective function examined is the Rosenbrock Banana Function where $a = 1$ and $b = 0.1$. 
+    This particular 2D Rosenbrock Banana Function is used to investigate the differences and similarities between the following 1D Line Search Methods:
+    \begin{itemize}
+        \item Swann's Bracketing Method
+        \item Powell's Bracketing Method
+    \end{itemize}
 
-    \subsection{Comparision between Swann's and Powell's Methods}
+    Fig. \ref{fig:AllLinesPlot} shows Lines A, B, and C along with the contours of the Rosenbrock Banana Function chosen. 
+    Note that Lines A and B pass through the global minimum at $(x, y) = (1, 1)$. 
+    The following subsection discusses how Swann's and Powell's Bracketing Methods find a suitable bracketing interval on the 1D line.
 
-    \section{Q2.}
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.5]{AllLines.svg}
+        \caption{1D Lines A, B, and C shown on top of the contours of the 2D Rosenbrock Banana Function.}
+        \label{fig:AllLinesPlot}
+    \end{figure}
 
-    \subsection{Example Optimization Trajectories}
 
-    \subsection{Example 1D Optimizations in Trajectory}
+    \subsection{Swann's vs Powell's for Initial Bracketing}
 
-    \subsection{(EXTRA) Hooke-Jeeves Result on Rosenbrock}
+    In order to apply a 1D Line Search on an N-D objective function $f: \mathbb{R}^n \rightarrow \mathbb{R}$, a parametrization along a 1D line is necessary.
+    This 1D parametrization can be done in the following way in Eq. \ref{eq:1D_parametrization}. 
+    An initial point $\vec{x_0} \in \mathbb{R}^n$ along with a direction $\vec{d} \in \mathbb{R}^n$ serve as a way to specify which 1D line to select.
+    The $\alpha \in \mathbb{R}$ parameter then is used to specify where along the 1D line to sample from for the 1D Line Search Methods.
 
-    \section{Q3.}
+    \begin{equation} \label{eq:1D_parametrization}
+        f_{\text{1D}} : \alpha \mapsto f \left( \vec{x_0} + \alpha\vec{d} \right)
+    \end{equation}
 
-    \subsection{Gradient Descent}
+    With this parametrization, the 1D Line Search Methods can try various values of $\alpha$ to sample the objective function.
+    The goal of the 1D Line Search is then to determine a suitable bracketing interval in terms of $\alpha_\text{lower}$ and $\alpha_\text{upper}$ wherein a minimum exists for the objective function along the 1D line.
+    
+    Applying Swann's Bracketing Method and Powell's Bracketing Methods on Lines A, B, and C from Fig. \ref{fig:AllLinesPlot} result initial bracketing intervals shown in Fig. \ref{fig:Q1_LineA_InitialBracketing}, Fig. \ref{fig:Q1_LineB_InitialBracketing}, Fig. \ref{fig:Q1_LineC_InitialBracketing}.
 
-    \subsubsection{Objective Function Definition and Gradient Derivation}
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{LineA_initialbracketing.svg}
+        \caption{1D Line Search Intervals on Line A found using Swann's and Powell's Bracketing Methods. Note that the location for global minimum $(1, 1)$ can be found on this line.}
+        \label{fig:Q1_LineA_InitialBracketing}
+    \end{figure}
 
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{LineB_initialbracketing.svg}
+        \caption{1D Line Search Intervals on Line B found using Swann's and Powell's Bracketing Methods. Note that the location for global minimum $(1, 1)$ can be found on this line.}
+        \label{fig:Q1_LineB_InitialBracketing}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{LineC_initialbracketing.svg}
+        \caption{1D Line Search Intervals on Line C found using Swann's and Powell's Bracketing Methods.}
+        \label{fig:Q1_LineC_InitialBracketing}
+    \end{figure}
+
+    Fig. \ref{fig:Q1_LineA_InitialBracketing}, Fig. \ref{fig:Q1_LineB_InitialBracketing}, Fig. \ref{fig:Q1_LineC_InitialBracketing} all show the 1D line relative to the 2D contours of the Rosenbrock Banana function, as well as the function value along the 1D line in terms of $\alpha$.
+    Note that that the objective function value is also shown in terms of a log10 scale to help visualize the differences in function value along the 1D line.
+
+    There are several interesting observations to note from these results.
+    \begin{itemize}
+        \item As per the algorithm definition, the 1D Line Searches only stop once it finds a situable interval.
+        \begin{itemize}
+            \item A suitable interval is such where the midpoint evaluated has a lower function value
+            \begin{itemize}
+                \item An example of this can be seen in Fig. \ref{fig:Q1_LineA_InitialBracketing} for Line A, where the final iteration for Swann's has a middle evaluation point at $\alpha_{\text{middle}} = 3$ which has a lower function value than the interval endpoints $\alpha_{\text{lower}} = 1$ and $\alpha_{\text{upper}} = 7$
+            \end{itemize}
+            \item If a non-suitable interval is found, then a new iteration for the 1D search is done. Powell's Bracketing Method tests the next point using a quadratic fitting technique and testing the minimum of such a parabola (within bounds). Whereas Swann's Bracketing Method simply tests farther away with a magnification factor and step size.
+            \begin{itemize}
+                \item This can be seen by the multiple intervals/iterations shown in the figures.
+            \end{itemize}
+        \end{itemize}
+        \item For Lines A and B which contained the global minimum there were different results in the Bracketing Methods in whether or not the global minimum was captured.
+        \begin{itemize}
+            \item For Line A both Powell's and Swann's Bracketing Intervals captured the global minimum because there was only one minimum in the nearby 1D function as seen on the log10 plot.
+            \item For Line B, only Swann's Bracketing Interval captured the global minimum inside its final interval. As can be seen for Powell's Bracketing Interval, only 1 interation was done as it formed a suitable interval.
+        \end{itemize}
+        \item For Lines A and C, Powell's Bracketing Method made the intervals smaller and smaller. It seems like due to the curvature of the 1D function near the initial starting point, the fitted parabolas formed such that to only move a small amount further along the 1D function.
+        \item For Lines B and C, the two different bracketing methods captured two different local minima.
+        \begin{itemize}
+            \item As can be seen with Powell's Bracketing Method, due to the local function behavior near the starting point, only the first nearby minimum was captured by Powell's. Powell's missed the deeper minima.
+            \item Swann's Method was simple enough with its steps to capture the deeper minima in a large interval.
+        \end{itemize}
+    \end{itemize}
+
+
+    \subsection{Golden Section Search after Swann/Powell}
+
+    After finding the initial bracketing interval, a Golden Section Search is performed. Fig. \ref{fig:Q1_GoldenLineB} below shows how the Powell and Swann's initial bracketing intervals are made smaller to some tolerance level. Note that the figure shows the 1D function values on a log10 scale to help to see the local function behavior.
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{LineB_GoldenComparison.svg}
+        \caption{Golden Section Search applied to 1D Line Search Results on Line B. The 1D Function shown in the plots are on a log10 scale. Iterations for Golden Section Search shown where the top is the initial bracketing interval, and towards the bottom is the final bracketing interval.}
+        \label{fig:Q1_GoldenLineB}
+    \end{figure}
+
+    There are some interesting observations on the results of the Golden Section Search on Line B
+    \begin{itemize}
+        \item Because Powell and Swann's found different intervals the Golden Section Search refined the intervals into two different minima. 
+        \item The global minimum of the 2D function is found near $\alpha \approx 3$. The Golden Section Search from the Swann's Bracketing Method correctly found this global minimum.
+        \item The  inner (non-end-point) function evaluations for the Golden Section Search are also shown in the plot. As can be seen, because of the golden ratio the previous functionevaluation points are able to be correctly reused.
+    \end{itemize}
+
+    \section{Q2. Search on 2D Rosenbrock Banana Function}
+
+    \subsection{Set-up}
+
+    In this section, a couple of search methods are applied to the full 2D Rosenbrock Banana Function from various different initial points.
+    The two major search methods are:
+    \begin{itemize}
+        \item Gradient Descent Method
+        \begin{itemize}
+            \item Using the gradient ($\nabla f$) of the Rosenbrock function find the next direction to search
+            \item Then using Swann's and Powell's Methods (given some tolerance parameter), the algorithm searches in that 1D direction found using the gradient
+            \item Once a minimum point in that 1D direction is found, the algorithm loops until the $\| \nabla f \| < 10^{-4}$.
+        \end{itemize}
+        \item (EXTRA) Hooke-Jeeves Method
+    \end{itemize}
+
+    These methods are applied to various initial positions on the 2D parameter search space. The labels for the initial points are found below in Table. \ref{tab:Q2_PointLocations}. These points relative to the contours of the 2D Rosenbrock Function are also shown in the following section.
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Point Label} & \textbf{(x, y) Location} \\ \hline
+        D                    & (-2, -2)                 \\ \hline
+        E                    & (-1.5, 1.5)              \\ \hline
+        F                    & (-1, 3)                  \\ \hline
+        G                    & (-0.5, -1.5)             \\ \hline
+        H                    & (2, 2)                   \\ \hline
+        Global Min           & (1, 1)                   \\ \hline
+        \end{tabular}
+        \caption{Initial Points and Global Minimum Locations for 2D Rosenbrock Objective Function Search}
+        \label{tab:Q2_PointLocations}
+    \end{table}
+
+    \subsection{Gradient Descent Results}
+
+    Each gradient step of the algorithm is recorded and plotted in Fig. \ref{fig:Q2_GradientDescentSteps} from the various different initial points in Table. \ref{tab:Q2_PointLocations}.
+    As seen in Fig. \ref{fig:Q2_GradientDescentSteps}, various different settings were used to see if there were any differences in the resulting trajectories. 
+    The two line search initial bracketing methods used were Powell's and Swann's.
+    Two different settings for the tolerance was also used, $10^{-4}$ shown on the top row, and $10^{-2}$ shown on the bottom row.
+
+    The values of the objective function for each gradient descent algorithm can be found in Fig. \ref{fig:Q2_Loss_vs_Steps}.
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{Q2_stepsvisualized.svg}
+        \caption{The trajectories of the Gradient Descent on Points D, E, F, G, and H using Powell's and Swann's Bracketing Methods. The top row uses a line search tolerance of $10^{-4}$ while the bottom row (low tol) uses a line search tolerance of $10^{-2}$. Contours only shown in limited region for clarity. Global Minimum located at $(1,1)$.}
+        \label{fig:Q2_GradientDescentSteps}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{Q2_loss_vs_steps.svg}
+        \caption{Objective Function Value vs Gradient Descent Steps for Points D, E, F, G, and H using Powell's and Swann's Bracketing Methods. The top row uses a line search tolerance of $10^{-4}$ while the bottom row (low tol) uses a line search tolerance of $10^{-2}$. Global Minimum located at $(1,1)$.}
+        \label{fig:Q2_Loss_vs_Steps}
+    \end{figure}
+
+    There are a few interesting observations to note from these Gradient Descent results seen in the contour plots on Fig. \ref{fig:Q2_GradientDescentSteps}
+    \begin{itemize}
+        \item On the the top row (with the correct amount of tolerance) the algorithm was able to correctly finds the global minimum at $(1,1)$ from the various initial starting positions.
+        \item There is no noticeable difference between the gradient steps of Swann's and Powell's on the top row.
+        \item As per the course notes, every step of the gradient descent should be orthogonal to the previous step as the gradient. This phenomena can be seen in the top row with the properly calibrated line search tolerance, where each gradient step is at 90 degrees to the previous gradient step.
+        \item All gradient descent trajectories encountered difficulty in the valley of the Rosenbrock Banana Function. The trajectories had to zig-zag down the valley to try to find the minimum.
+    \end{itemize}
+
+    There are a few interesting observations to note from Fig. \ref{fig:Q2_Loss_vs_Steps} with the objective function value plotted against the number the gradient descent steps.
+    \begin{itemize}
+        \item On the top row, the effect of zig-zag through the valley can be seen with the much slower descent taking much more gradient steps to find the global minimum.
+        \item The curve jumps more erratically in the bottom row with the low tolerance.
+    \end{itemize}
+
+    \subsection{(EXTRA) Hooke-Jeeves Result}
+
+    The Hooke-Jeeves algorithm (with parameters $\Delta = 0.2$ and $\delta = 0.001$) was applied to the same 2D Rosenbrock Banana Function starting at the same initial values. The results from this can be seen in Fig. \ref{fig:Q2_HJ_visualized}.
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[scale=0.7]{Q2_HookeJeeves_visualized.svg}
+        \caption{Hooke-Jeeves steps visualized when applied to the 2D Rosenbrock Function.}
+        \label{fig:Q2_HJ_visualized}
+    \end{figure}
+
+    There are a few interesting observations from this.
+    \begin{itemize}
+        \item Because Hooke-Jeeves does not have access to the gradient information, the algorithm seems to have a harder time finding the global minimum from points E, F, and H.
+        \item The behavior of bouncing around in the valley can still be seen with D and G.
+        \item The trajectory from point H went towards the valley, but away from the global minimum.
+    \end{itemize}
+
+    \section{Q3. Model Fitting using Optimization Techniques}
+
+    \subsection{Set-up}
+
+    Given a set of data point (also called measurements) and a model, optimization techniques can be applied to find the model parameters which best fit the data.
+
+    In this lab assignment, the model $f$ used will be the following where the parameter vector is $x \in \mathbb{R}^5$. The data used for fitting is found in Table \ref{tab:Q3_Data}.
+
+    \begin{equation}
+        f(t ; x) = y = x_1 + x_2 e^{x_4 t} + x_3 e^{x_5 t}
+    \end{equation}
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+        \hline
+        \textbf{t}    & 0    & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    \\ \hline
+        \textbf{y(t)} & 1.75 & 1.65 & 1.56 & 1.49 & 1.43 & 1.37 & 1.33 & 1.29 & 1.26 & 1.23 \\ \hline
+        \end{tabular}
+        \caption{Data used for Model Fitting}
+        \label{tab:Q3_Data}
+    \end{table}
+
+    The objective function used for optimization will be the sum of squared errors, and as such the optimization will try to find the parameters that best fit the data in the least squares sense.
+
+    In this section, model fitting will be done using two different optimization techniques:
+    \begin{itemize}
+        \item Gradient Descent (as described in Q2)
+        \item Hooke-Jeeves
+    \end{itemize}
+
+    \subsection{Gradient Descent Method}
+
+    \subsubsection{Sum Squares Function and Gradient Derivation}
+
+    In order to apply the Gradient Descent method to the objective function, the gradient function must be obtained. The following steps show the symbolic derivation of the gradient of the objective function.
+
+    First, we define the objective function $L$, which is way to evaluate a model's fit of the data $(t_i, y_i)$ in a least squares sense.
     \begin{align}
     L &= \sum_i (y_{\text{data}} - y_{\text{model}})^2 \\
     L &= \sum_i (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2
     \end{align}
 
-    We can now derive the gradient.
+    We can now derive the gradient $\nabla L$.
     \begin{align}
     \nabla L &= \nabla \left( \sum_i (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2 \right) \\
     \nabla L &= \sum_i \left( \nabla \left( (y_{i} - (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i}))^2 \right) \right) \\
@@ -65,9 +294,133 @@
             \end{bmatrix}
     \end{align}
 
-    \subsection{Hooke-Jeeves}
+    The above expressions for $\nabla L$ and $\nabla (x_1 + x_2 e ^ {x_4 t_i} + x_3 e ^{x_5 t_i})$ define the gradient in full given some data and a location in the parameter space to evaluate the gradient.
+
+    \subsubsection{Gradient Descent Results}
+
+    Using the gradient defined above, the following figures are results from the gradient descent algorithm from various different starting guesses. The starting guesses can be found in Table \ref{tab:Q3_InitialGuessParams}.
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Label}  & \textbf{$\left[ x_1, x_2, x_3, x_4, x_5 \right]$ Initial Parameter Vector} \\ \hline
+        Initial Guess 1 &  $[0.1, 0.1, 0.1, 0.1, 0.1]$                                                 \\ \hline
+        Initial Guess 2 &  $[-0.1, -0.1, -0.1, -0.1, -0.1]$                                            \\ \hline
+        Initial Guess 3 &  $[0.0, 0.1, -0.1, 0.0, 0.1]$                                                \\ \hline
+        \end{tabular}
+        \caption{Labels for Initial Parameters used in Model Fitting}
+        \label{tab:Q3_InitialGuessParams}
+    \end{table}
+
+    The resulting models are shown in Fig. \ref{fig:Q3_best_fit_all}. They are plotted against the data.
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_BestFits_1.svg}
+            \caption{Initial Guess 1}
+            \label{fig:Q3_best_fit_1}
+        \end{subfigure}
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_BestFits_2.svg}
+            \caption{Initial Guess 2}
+            \label{fig:Q3_best_fit_2}
+        \end{subfigure}
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_BestFits_3.svg}
+            \caption{Initial Guess 3}
+            \label{fig:Q3_best_fit_3}
+        \end{subfigure}
+        \caption{Result of optimization of model parameters using various initial guesses. Fitted model plotted against data. Various Line Search tolerances were used to do the gradient descent as shown in the legend of the plots.}
+        \label{fig:Q3_best_fit_all}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_LossVsSteps_1.svg}
+            \caption{Initial Guess 1}
+            \label{fig:Q3_loss_vs_steps_1}
+        \end{subfigure}
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_LossVsSteps_2.svg}
+            \caption{Initial Guess 2}
+            \label{fig:Q3_loss_vs_steps_2}
+        \end{subfigure}
+        \begin{subfigure}{.6\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{Q3_LossVsSteps_3.svg}
+            \caption{Initial Guess 3}
+            \label{fig:Q3_loss_vs_steps_3}
+        \end{subfigure}
+        \caption{Loss vs Gradient Descent Iterations plot for various guesses. Different line search tolerances were used as shown in legend of plots.}
+        \label{fig:Q3_loss_vs_steps_all}
+    \end{figure}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+% \usepackage{multirow}
+\begin{table}[]
+    \begin{tabular}{@{}cllll@{}}
+    \toprule
+    \multicolumn{1}{l}{\textbf{Initial Guess}} & \textbf{\begin{tabular}[c]{@{}l@{}}Line Search\\ Tolerance\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Function Evals\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Gradient Steps\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Final Parameter\\ Vector {[}x1, x2, x3, x4, x5{]}\\ (rounded)\end{tabular}} \\ \midrule
+    \multirow{3}{*}{Initial Guess 1}           & 0.1                                                                      & 6113                                                                        & 433                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                               & 0.01                                                                     & 24643                                                                       & 1298                                                                        & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                               & 0.001                                                                    & 29904                                                                       & 1299                                                                        & {[}1.074, 0.338, 0.338, -0.162, -0.163{]}                                                                      \\
+    \multirow{3}{*}{Initial Guess 2}           & 0.1                                                                      & 12918                                                                       & 919                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
+                                               & 0.01                                                                     & 13416                                                                       & 707                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                               & 0.001                                                                    & 22425                                                                       & 976                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
+    \multirow{3}{*}{Initial Guess 3}           & 0.1                                                                      & 222340                                                                      & 15879                                                                       & {[}1.078, -0.002, 0.674, -51.631, -0.165{]}                                                                    \\
+                                               & 0.01                                                                     & 137726                                                                      & 7249                                                                        & {[}1.074, 0.000, 0.676, -1.693, -0.163{]}                                                                      \\
+                                               & 0.001                                                                    & 64230                                                                       & 2791                                                                        & {[}1.075, -0.001, 0.675, -4.498, -0.163{]}                                                                     \\ \cmidrule(l){2-5} 
+    \end{tabular}
+    \end{table}
+
+
+    There are a few interesting observations to make from these results.
+    \begin{itemize}
+        \item The different initial guesses and line search tolerances used did not change the final fit of the model parameter. 
+        \item The different initial guesses and line search tolerences did make a difference into the exact final parameter vector that the technique converged to. This seems to indicate multiple local minima that all have various similar fits (least squares sense). In fact as seen with some of the final parameter vectors having $x_2 \approx 0$ term (from Initial Guess 3), a single constant term summed up with an exponential term may be another suitable model instead of two different exponential terms as given in the assignment. Recall that the original model given the assignment is $f(t; x) = x_1 + x_2 e^{x_4 t} +x_3 e^ {x_5 t}$.
+        \item Not shown here, however comparing the results between using Swann's vs Powell's for the line search bracketing did not make a difference between the final fit of the model.
+        \item All the trials was able to reduce the sum of squared error to $10^{-1}$ very quickly in a short amount of gradient steps. The rest of the gradient steps were used to reduce that error down lower than $10^{-4}$.
+        \item The run using Initial Guess 3 and Line Search tolerance of 0.1 was stuck for a large amount of steps as seen in the plot and the number of function evaluations and gradient descent evaluations.
+    \end{itemize}
+    
+    \subsection{Hooke-Jeeves Direct Search Method Results}
+
+    The Hooke-Jeeves algorithm (with parameters $\Delta = 0.1$ and $\delta = 0.01$) was applied using the same initial guesses as in Table \ref{tab:Q3_InitialGuessParams} to the Model Fitting optimization problem. 
+    A visualization of the results can be found on Fig. \ref{fig:Q3_HookeJeeves}. A table summarizing the number of function evaluations and the final parameters can be seen in Table ???. (Note zero gradient function evaluations were used because the Hooke-Jeeves algorithm does not use the gradient function.)
+
+    \begin{figure}[H]
+        \begin{subfigure}
+            \centering
+            \includesvg[width=\linewidth]{Q3HookeJeeves_BestFits.svg}
+            \caption{Final Models found using Hooke-Jeeves compared with data.}
+        \end{subfigure} 
+        \begin{subfigure}
+            \centering
+            \includesvg[width=\linewidth]{Q3HookeJeeves_LossVsSteps.svg}
+            \caption{Loss vs Iterations for Hooke-Jeeves}
+        \end{subfigure}
+        \caption{Results from Hooke-Jeeves on Model Fitting}
+        \label{fig:Q3_HookeJeeves}
+    \end{figure}
+
+    As seen compared with the results from the Gradient Descent algorith...
 
     \subsection{(EXTRA) Automatic Differentiation Gradient Descent}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_Autodiff_Comparison_LossVsSteps.svg}
+        \caption{Caption}
+    \end{figure}
 
     \section{Q4. (Graduate Student)}
 
@@ -152,11 +505,7 @@
     \appendix
     \section{Extra Plots}
 
-    \begin{figure}[t]
-        \centering
-        \includesvg[width=\linewidth]{AllLines.svg}
-        \caption{Caption}
-    \end{figure}
+    \subsection{Q1 Extra Plots}
 
     \begin{figure}[t]
         \centering
@@ -166,105 +515,7 @@
     
     \begin{figure}[h]
         \centering
-        \includesvg[width=\linewidth]{LineA_initialbracketing.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{LineB_GoldenComparison.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{LineB_initialbracketing.svg}
-        \caption{Caption}
-    \end{figure}
-    
-    \begin{figure}[h]
-        \centering
         \includesvg[width=\linewidth]{LineC_GoldenComparison.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{LineC_initialbracketing.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q2_HookeJeeves_visualized.svg}
-        \caption{Caption}
-    \end{figure}
-    
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q2_loss_vs_steps.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q2_stepsvisualized.svg}
-        \caption{Caption}
-    \end{figure}
-    
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_Autodiff_Comparison_LossVsSteps.svg}
-        \caption{Caption}
-    \end{figure}
-    
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_BestFits_1.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_BestFits_2.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_BestFits_3.svg}
-        \caption{Caption}
-    \end{figure}
-    
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_LossVsSteps_1.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_LossVsSteps_2.svg}
-        \caption{Caption}
-    \end{figure}
-
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3_LossVsSteps_3.svg}
-        \caption{Caption}
-    \end{figure}
-    
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3HookeJeeves_BestFits.svg}
-        \caption{Caption}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includesvg[width=\linewidth]{Q3HookeJeeves_LossVsSteps.svg}
         \caption{Caption}
     \end{figure}
 
