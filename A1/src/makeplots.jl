@@ -499,7 +499,7 @@ begin
         begin
             t_bestfit = 0:0.02:9
             y_bestfit = Q3Model(t_bestfit, final_param_vector)
-            plot!(plot_HJ_curves_all_inits, t_bestfit, y_bestfit, label="Best Fit using Guess $index_param", legend=:best, color=index_param)
+            plot!(plot_HJ_curves_all_inits, t_bestfit, y_bestfit, label="Best Fit using Guess $index_param", legend=:left, color=index_param)
         end
 
         # Plot loss curve

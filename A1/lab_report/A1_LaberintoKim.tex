@@ -2,6 +2,9 @@
 
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{svg}
+\svgpath{{../assets/}}
+\usepackage[margin=1in]{geometry}
 
 \addtolength{\jot}{1em} %https://tex.stackexchange.com/questions/14679/amsmath-align-environment-row-spacing
 
@@ -20,11 +23,7 @@
 
     \subsection{Example 1D Optimization Trajectories}
 
-    %Play around with different starting points and directions
-    %Show trajectory in 1D show trajectory in 2D
-
-    %Incorrectly found examples
-    %Correctly found examples changing interval size
+    % All Lines.svg
 
     \subsection{Comparision between Swann's and Powell's Methods}
 
@@ -151,6 +150,124 @@
     \end{align*}
 
     \appendix
+    \section{Extra Plots}
+
+    \begin{figure}[t]
+        \centering
+        \includesvg[width=\linewidth]{AllLines.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[t]
+        \centering
+        \includesvg[width=\linewidth]{LineA_GoldenComparison.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{LineA_initialbracketing.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{LineB_GoldenComparison.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{LineB_initialbracketing.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{LineC_GoldenComparison.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{LineC_initialbracketing.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q2_HookeJeeves_visualized.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q2_loss_vs_steps.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q2_stepsvisualized.svg}
+        \caption{Caption}
+    \end{figure}
+    
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_Autodiff_Comparison_LossVsSteps.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_BestFits_1.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_BestFits_2.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_BestFits_3.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_LossVsSteps_1.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_LossVsSteps_2.svg}
+        \caption{Caption}
+    \end{figure}
+
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3_LossVsSteps_3.svg}
+        \caption{Caption}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3HookeJeeves_BestFits.svg}
+        \caption{Caption}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includesvg[width=\linewidth]{Q3HookeJeeves_LossVsSteps.svg}
+        \caption{Caption}
+    \end{figure}
+
     \section{Source Code}
 
     \subsection{All Optimization Algorithms (A1Module.jl)}
