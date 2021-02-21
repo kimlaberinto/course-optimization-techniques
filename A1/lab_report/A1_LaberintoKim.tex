@@ -11,10 +11,12 @@
 \usepackage{booktabs} %For tables
 \usepackage{multirow} %For tables
 
+\usepackage[charsperline=120]{jlcode} %For Julia Code Listing https://github.com/wg030/jlcode
+
 \addtolength{\jot}{1em} %https://tex.stackexchange.com/questions/14679/amsmath-align-environment-row-spacing
 
-\title{Optimization Assignment 1}
-\date{2021-02-xx}
+\title{Optimization Assignment 1\\Line Search Algorithms and Gradient Descent}
+\date{Winter 2021}
 \author{Kim Paolo Laberinto}
 
 \begin{document}
@@ -363,27 +365,30 @@
         \label{fig:Q3_loss_vs_steps_all}
     \end{figure}
 
-% Please add the following required packages to your document preamble:
-% \usepackage{booktabs}
-% \usepackage{multirow}
-\begin{table}[]
-    \begin{tabular}{@{}cllll@{}}
-    \toprule
-    \multicolumn{1}{l}{\textbf{Initial Guess}} & \textbf{\begin{tabular}[c]{@{}l@{}}Line Search\\ Tolerance\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Function Evals\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Gradient Steps\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Final Parameter\\ Vector {[}x1, x2, x3, x4, x5{]}\\ (rounded)\end{tabular}} \\ \midrule
-    \multirow{3}{*}{Initial Guess 1}           & 0.1                                                                      & 6113                                                                        & 433                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
-                                               & 0.01                                                                     & 24643                                                                       & 1298                                                                        & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
-                                               & 0.001                                                                    & 29904                                                                       & 1299                                                                        & {[}1.074, 0.338, 0.338, -0.162, -0.163{]}                                                                      \\
-    \multirow{3}{*}{Initial Guess 2}           & 0.1                                                                      & 12918                                                                       & 919                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
-                                               & 0.01                                                                     & 13416                                                                       & 707                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
-                                               & 0.001                                                                    & 22425                                                                       & 976                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
-    \multirow{3}{*}{Initial Guess 3}           & 0.1                                                                      & 222340                                                                      & 15879                                                                       & {[}1.078, -0.002, 0.674, -51.631, -0.165{]}                                                                    \\
-                                               & 0.01                                                                     & 137726                                                                      & 7249                                                                        & {[}1.074, 0.000, 0.676, -1.693, -0.163{]}                                                                      \\
-                                               & 0.001                                                                    & 64230                                                                       & 2791                                                                        & {[}1.075, -0.001, 0.675, -4.498, -0.163{]}                                                                     \\ \cmidrule(l){2-5} 
-    \end{tabular}
+    % Please add the following required packages to your document preamble:
+    % \usepackage{booktabs}
+    % \usepackage{multirow}
+    \begin{table}[]
+        \centering
+        \begin{tabular}{@{}cllll@{}}
+        \toprule
+        \multicolumn{1}{l}{\textbf{Initial Guess}} & \textbf{\begin{tabular}[c]{@{}l@{}}Line Search\\ Tolerance\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Function Evals\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Gradient Steps\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Final Parameter\\ Vector {[}x1, x2, x3, x4, x5{]}\\ (rounded)\end{tabular}} \\ \midrule
+        \multirow{3}{*}{Initial Guess 1}           & 0.1                                                                      & 6113                                                                        & 433                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                                & 0.01                                                                     & 24643                                                                       & 1298                                                                        & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                                & 0.001                                                                    & 29904                                                                       & 1299                                                                        & {[}1.074, 0.338, 0.338, -0.162, -0.163{]}                                                                      \\
+        \multirow{3}{*}{Initial Guess 2}           & 0.1                                                                      & 12918                                                                       & 919                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
+                                                & 0.01                                                                     & 13416                                                                       & 707                                                                         & {[}1.076, 0.337, 0.337, -0.163, -0.163{]}                                                                      \\
+                                                & 0.001                                                                    & 22425                                                                       & 976                                                                         & {[}1.074, 0.338, 0.338, -0.163, -0.163{]}                                                                      \\
+        \multirow{3}{*}{Initial Guess 3}           & 0.1                                                                      & 222340                                                                      & 15879                                                                       & {[}1.078, -0.002, 0.674, -51.631, -0.165{]}                                                                    \\
+                                                & 0.01                                                                     & 137726                                                                      & 7249                                                                        & {[}1.074, 0.000, 0.676, -1.693, -0.163{]}                                                                      \\
+                                                & 0.001                                                                    & 64230                                                                       & 2791                                                                        & {[}1.075, -0.001, 0.675, -4.498, -0.163{]}                                                                     \\ \cmidrule(l){2-5} 
+        \end{tabular}
+        \caption{Summary of Results and Number of Function Evaluations for Gradient Descent Model Fitting.}
+        \label{tab:Q3_Table_Summary}
     \end{table}
 
 
-    There are a few interesting observations to make from these results.
+    There are a few interesting observations to make from these results and from the table of number of function evaluations on Table \ref{tab:Q3_Table_Summary}.
     \begin{itemize}
         \item The different initial guesses and line search tolerances used did not change the final fit of the model parameter. 
         \item The different initial guesses and line search tolerences did make a difference into the exact final parameter vector that the technique converged to. This seems to indicate multiple local minima that all have various similar fits (least squares sense). In fact as seen with some of the final parameter vectors having $x_2 \approx 0$ term (from Initial Guess 3), a single constant term summed up with an exponential term may be another suitable model instead of two different exponential terms as given in the assignment. Recall that the original model given the assignment is $f(t; x) = x_1 + x_2 e^{x_4 t} +x_3 e^ {x_5 t}$.
@@ -395,16 +400,30 @@
     \subsection{Hooke-Jeeves Direct Search Method Results}
 
     The Hooke-Jeeves algorithm (with parameters $\Delta = 0.1$ and $\delta = 0.01$) was applied using the same initial guesses as in Table \ref{tab:Q3_InitialGuessParams} to the Model Fitting optimization problem. 
-    A visualization of the results can be found on Fig. \ref{fig:Q3_HookeJeeves}. A table summarizing the number of function evaluations and the final parameters can be seen in Table ???. (Note zero gradient function evaluations were used because the Hooke-Jeeves algorithm does not use the gradient function.)
+    A visualization of the results can be found on Fig. \ref{fig:Q3_HookeJeeves}. A table summarizing the number of function evaluations and the final parameters can be seen in Table \ref{tab:Q3_HookeJeeves_Summary}. (Note zero gradient function evaluations were used because the Hooke-Jeeves algorithm does not use the gradient function.)
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{@{}clll@{}}
+        \toprule
+        \multicolumn{1}{l}{\textbf{Initial Guess}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Function Evals\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Gradient Steps\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Final Parameter\\ Vector {[}x1, x2, x3, x4, x5{]}\\ (rounded)\end{tabular}} \\ \midrule
+        Initial Guess 1                            & 35                                                                          & 0                                                                           & {[}0.1, 0.1, 0.1, 0.1, 0.1{]}                                                                                  \\
+        Initial Guess 2                            & 308                                                                         & 0                                                                           & {[}0.880, 0.770, -0.1, -0.1, -0.1{]}                                                                           \\
+        Initial Guess 3                            & 35                                                                          & 0                                                                           & {[}0.0, 0.1, -0.1, 0.0, 0.1{]}                                                                                
+        \end{tabular}
+        \caption{Table Summary of results from Hooke-Jeeves}
+        \label{tab:Q3_HookeJeeves_Summary}
+    \end{table}
 
     \begin{figure}[H]
-        \begin{subfigure}
+        \centering
+        \begin{subfigure}{.6\textwidth}
             \centering
             \includesvg[width=\linewidth]{Q3HookeJeeves_BestFits.svg}
             \caption{Final Models found using Hooke-Jeeves compared with data.}
-        \end{subfigure} 
-        \begin{subfigure}
-            \centering
+        \end{subfigure}
+        \centering
+        \begin{subfigure}{.6\textwidth}
             \includesvg[width=\linewidth]{Q3HookeJeeves_LossVsSteps.svg}
             \caption{Loss vs Iterations for Hooke-Jeeves}
         \end{subfigure}
@@ -412,32 +431,45 @@
         \label{fig:Q3_HookeJeeves}
     \end{figure}
 
-    As seen compared with the results from the Gradient Descent algorith...
+    When compared with the results from the Gradient Descent algorithm, there are a few observations to make.
+    \begin{itemize}
+        \item Clearly, Hooke-Jeeves was not able to properly fit the model to the data.
+        \item Two of the initial starting guesses (1, and 3) was not able to move away properly as seen in the Loss vs Iterations plot. With the given orthogonal directions and the $\Delta$ and $\delta$ parameter, the Hooke-Jeeves algorithm was stuck and did not proceed.
+        \item The number of function evaluations for Hooke-Jeeves was lower than the the number of function evaluations for Gradient Descent. However clearly, Hooke-Jeeves did not work.
+        \item Gradient-Descent with the gradient information was much better at finding the best fitting parameters.
+    \end{itemize}
 
     \subsection{(EXTRA) Automatic Differentiation Gradient Descent}
 
-    \begin{figure}[h]
+    As an alternative to deriving the gradient of the objective function by hand, one can apply a technique called Automatic Differentiation. Note that automatic differentiation is not symbolic differentiation nor finite difference methods. My understanding of automatic differentiation uses the source code representation of the objective function and applies a concept called dual numbers (similar to imaginary numbers but with a quantity called $\epsilon$ where $\epsilon^2 = 0$) to do the automatic differentiation on all the sub-operations in the source code (e.g. addition, subtraction, products, etc.).
+
+    The implementation for automatic differentiation in this lab assignment used the ForwardDiff.jl package in the programming language called Julia. The ForwardDiff.jl package can be used to compute the gradient automatically. An example of such an implementation is the following piece of code.
+
+    \begin{jllisting}
+        function autodiff_grad_objective_function(params)
+            global N_grad_f_eval += 1
+            return ForwardDiff.gradient(objective_function, params)
+        end
+    \end{jllisting}
+
+    The above function as then used as the gradient function for the Gradient Descent Algorithm. The result from this technique to the Model Fitting question can be seen in Fig. \ref{fig:Q3_AutoDiff}. As seen in the error vs gradient steps plot, the progression to find the minimum is identical.
+
+    \begin{figure}[H]
         \centering
-        \includesvg[width=\linewidth]{Q3_Autodiff_Comparison_LossVsSteps.svg}
-        \caption{Caption}
+        \includesvg[scale=0.7]{Q3_Autodiff_Comparison_LossVsSteps.svg}
+        \caption{Comparison of Error vs Steps between the manually programmed Gradient Descent vs Automatic Differentiation}
+        \label{fig:Q3_AutoDiff}
     \end{figure}
 
-    \section{Q4. (Graduate Student)}
+    \section{Q4. Vector Space Exercises (Graduate Student - EXTRA)}
 
-    Let $V$ be the vector space of polynomial functions from $\mathbb{R} \rightarrow \mathbb{R}$ which have degree less than or equal to 2.
-
-    That is, for all $a, b, c \in \mathbb{R}$ the following polynomial $p(x)$ is in $V$
-    
-    \begin{align*}
-    p(x) = a + bx + cx^2
-    \end{align*}    
+    Omitted for the sake of time. 
 
     \subsection{Proving $B_1$ and $B_1$ are both a basis of $V$}
 
     \subsubsection{Proof: $B_1$ is Linearly Independent}
-    - Implication of only way to get 0 vector.
+
     \subsubsection{Proof: $B_1$ spans $V$}
-    - Show all $v \in V$ can be represented in basis
 
     \subsubsection{Proof: $B_2$ is Linearly Independent}
 
@@ -451,7 +483,9 @@
 
     \subsubsection{Matrix Representation of D in the bases $B_1$ and $B_2$}
 
-    \section{Q5. (Graduate Student)}
+    \section{Q5. Linear Transformation and Coordinates Exercise (Graduate Student - EXTRA)}
+    
+    Omitted for sake of time.
 
     \subsection{x in full $\mathbb{R}^3$ standard basis}
     \subsection{Coordinates of $x$ in $B_X$}
@@ -459,7 +493,7 @@
     \subsection{y in full $\mathbb{R}^4$ standard basis}
 
 
-    \section{Q6. (Graduate Student)}
+    \section{Q6. Matrix Calculus / Derivative Exercise (Graduate Student - EXTRA)}
     \subsection{ $Df$ derivation }
     Let $f: \mathbb{R}^4 \rightarrow \mathbb{R}$ be defined as $f(x) = \| Ax - b \| + \lambda \| Cx \| + \gamma \| Eb \|$ where $A, C, E \in \mathbb{R}^{4 \times 4}$, $x,b \in \mathbb{R}^4$ and $\lambda,\gamma \in \mathbb{R}$.
 
@@ -507,25 +541,27 @@
 
     \subsection{Q1 Extra Plots}
 
-    \begin{figure}[t]
+    \begin{figure}[H]
         \centering
         \includesvg[width=\linewidth]{LineA_GoldenComparison.svg}
-        \caption{Caption}
+        \caption{Golden Section Comparison for Line A in Q1}
     \end{figure}
     
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includesvg[width=\linewidth]{LineC_GoldenComparison.svg}
-        \caption{Caption}
+        \caption{Golden Section Comparison for Line C in Q1}
     \end{figure}
 
     \section{Source Code}
 
     \subsection{All Optimization Algorithms (A1Module.jl)}
 
+    \jlinputlisting{../src/A1_module/A1Module.jl}
+
     \subsection{Plot Generation Script (makeplots.jl)}
 
-    \subsection{(EXTRA) Automatic Differentiation for Gradient}
+    \jlinputlisting{../src/makeplots.jl}
 
     
 
