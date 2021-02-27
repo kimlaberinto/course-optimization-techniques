@@ -397,9 +397,9 @@
         \item The run using Initial Guess 3 and Line Search tolerance of 0.1 was stuck for a large amount of steps as seen in the plot and the number of function evaluations and gradient descent evaluations.
     \end{itemize}
     
-    \subsection{Hooke-Jeeves Direct Search Method Results}
+    \subsection{Hooke-Jeeves Direct Search Method Results (UPDATED: 2021-02-27)}
 
-    The Hooke-Jeeves algorithm (with parameters $\Delta = 0.1$ and $\delta = 0.01$) was applied using the same initial guesses as in Table \ref{tab:Q3_InitialGuessParams} to the Model Fitting optimization problem. 
+    The Hooke-Jeeves algorithm (with parameters $\Delta = 0.1$ and $\delta = 1\text{e}-4$) was applied using the same initial guesses as in Table \ref{tab:Q3_InitialGuessParams} to the Model Fitting optimization problem. 
     A visualization of the results can be found on Fig. \ref{fig:Q3_HookeJeeves}. A table summarizing the number of function evaluations and the final parameters can be seen in Table \ref{tab:Q3_HookeJeeves_Summary}. (Note zero gradient function evaluations were used because the Hooke-Jeeves algorithm does not use the gradient function.)
 
     \begin{table}[H]
@@ -407,9 +407,9 @@
         \begin{tabular}{@{}clll@{}}
         \toprule
         \multicolumn{1}{l}{\textbf{Initial Guess}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Function Evals\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Number of\\ Gradient Steps\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Final Parameter\\ Vector {[}x1, x2, x3, x4, x5{]}\\ (rounded)\end{tabular}} \\ \midrule
-        Initial Guess 1                            & 35                                                                          & 0                                                                           & {[}0.1, 0.1, 0.1, 0.1, 0.1{]}                                                                                  \\
-        Initial Guess 2                            & 308                                                                         & 0                                                                           & {[}0.880, 0.770, -0.1, -0.1, -0.1{]}                                                                           \\
-        Initial Guess 3                            & 35                                                                          & 0                                                                           & {[}0.0, 0.1, -0.1, 0.0, 0.1{]}                                                                                
+        Initial Guess 1                            & 602                                                                           & 0                                                                           & [0.6202, 0.8340, 0.2951, -0.1381, 0.0254]                                                                                  \\
+        Initial Guess 2                            & 831                                                                           & 0                                                                           & [0.5630, 0.9171, 0.2687, -0.1273, 0.0379]                                                                           \\
+        Initial Guess 3                            & 4950                                                                          & 0                                                                           & [1.0756, 0.0000, 0.6746, 0.4953, -0.1632]                                                                                
         \end{tabular}
         \caption{Table Summary of results from Hooke-Jeeves}
         \label{tab:Q3_HookeJeeves_Summary}
@@ -433,10 +433,8 @@
 
     When compared with the results from the Gradient Descent algorithm, there are a few observations to make.
     \begin{itemize}
-        \item Clearly, Hooke-Jeeves was not able to properly fit the model to the data.
-        \item Two of the initial starting guesses (1, and 3) was not able to move away properly as seen in the Loss vs Iterations plot. With the given orthogonal directions and the $\Delta$ and $\delta$ parameter, the Hooke-Jeeves algorithm was stuck and did not proceed.
-        \item The number of function evaluations for Hooke-Jeeves was lower than the the number of function evaluations for Gradient Descent. However clearly, Hooke-Jeeves did not work.
-        \item Gradient-Descent with the gradient information was much better at finding the best fitting parameters.
+        \item Hooke-Jeeves was able to properly fit the model to the data.
+        \item The number of function evaluations for Hooke-Jeeves was lower than the the number of function evaluations for Gradient Descent.
     \end{itemize}
 
     \subsection{(EXTRA) Automatic Differentiation Gradient Descent}

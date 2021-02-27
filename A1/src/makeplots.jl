@@ -481,7 +481,7 @@ begin
     scatter!(plot_HJ_curves_all_inits, TIME_DATA, Y_DATA, label="Data Points", color=4)
 
     init_params_array = [[0.1, 0.1, 0.1, 0.1, 0.1], [-0.1, -0.1, -0.1, -0.1, -0.1], [0.0, 0.1, -0.1, 0.0, 0.1]]
-    HJ_tolerance = 1e-2
+    HJ_tolerance = 1e-4
     for (index_param, init_params) in enumerate(init_params_array)
 
         global N_f_eval = 0
@@ -492,14 +492,14 @@ begin
                                  [0, 0, 1, 0, 0],
                                  [0, 0, 0, 1, 0],
                                  [0, 0, 0, 0, 1]]
-        result, history = HookeJeeves(rosenbrock_banana, init_params, .1, HJ_tolerance, orthogonal_directions)
+        result, history = HookeJeeves(objective_function, init_params, .1, HJ_tolerance, orthogonal_directions)
         final_param_vector = result
 
         # Plot curve
         begin
             t_bestfit = 0:0.02:9
             y_bestfit = Q3Model(t_bestfit, final_param_vector)
-            plot!(plot_HJ_curves_all_inits, t_bestfit, y_bestfit, label="Best Fit using Guess $index_param", legend=:left, color=index_param)
+            plot!(plot_HJ_curves_all_inits, t_bestfit, y_bestfit, label="Best Fit using Guess $index_param", legend=:topright, color=index_param)
         end
 
         # Plot loss curve

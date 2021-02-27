@@ -1,4 +1,4 @@
 Initial Parameter Guess for whole file: [0.0, 0.1, -0.1, 0.0, 0.1]
-Num Function Evals : 35
+Num Function Evals : 4950
 Num Gradient Steps/Evals : 0
-Final Parameter Vectors : [0.0, 0.1, -0.1, 0.0, 0.1]
+Final Parameter Vectors : [1.075600000000001, 3.3306690738754696e-16, 0.6746000000000011, 0.49530000000031493, -0.16320000000000026]
