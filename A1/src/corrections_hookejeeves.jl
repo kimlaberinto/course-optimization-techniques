@@ -109,7 +109,7 @@ end
 plot_layout = @layout [a; b; c]
 plot(plot_curve, plot_loss, plot_deltas, layout = plot_layout, size=(500, 700))
 
-savefig("A1/assets/2021-02-27_HookeJeeves_FixBug_Plot.png")
+savefig("assets/2021-02-27_HookeJeeves_FixBug_Plot.png")
 plot!() #Show plot in VSCode
 
 println("big_delta - Starting delta: $STARTING_DELTA")

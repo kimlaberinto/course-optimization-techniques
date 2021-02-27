@@ -56,7 +56,7 @@ begin
     xlims!(-2, 2)
     ylims!(-2, 3)
 
-    savefig("A1/assets/AllLines.svg")
+    savefig("assets/AllLines.svg")
 end
 
 # Function for plot file
@@ -136,7 +136,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
 
     xlabel!("Alpha (α)")
     plot(p1, p_1D, p_1Dlog, p_powell, p_swanns, layout=l, size=(800, 500))
-    savefig("A1/assets/$string_for_plotfile.svg")
+    savefig("assets/$string_for_plotfile.svg")
 
     layout_golden = @layout [a{0.2h} ; [b ; c] [d ; e]]
 
@@ -181,7 +181,7 @@ function make_bracketing_plot(string_for_plotfile, letter, initial_point, away_p
     title!(p_1Dlog, "Log10 1D Function for Line $letter")
     plot(p_1Dlog, plot_zoomed_powell, p_powell_goldensearch, plot_zoomed_swanns, p_swanns_goldensearch, layout=layout_golden, size=(800, 500))
     xlabel!("Alpha (α)")
-    savefig("A1/assets/$golden_plot_string.svg")
+    savefig("assets/$golden_plot_string.svg")
 end
 
 # Block for Q1 Plots
@@ -303,14 +303,14 @@ begin
 
     layout_Q2 =  @layout [a b; c d]
     plot(plot_Q2_swanns, plot_Q2_powells, plot_Q2_swanns_lowtol, plot_Q2_powells_lowtol, layout = layout_Q2, size=(1000, 1000))
-    savefig("A1/assets/Q2_stepsvisualized.svg")
+    savefig("assets/Q2_stepsvisualized.svg")
 
     layout_Q2_loss_vs_steps = @layout [a b; c d]
     plot(plot_Q2_loss_vs_iter_swanns, plot_Q2_loss_vs_iter_powells, plot_Q2_loss_vs_iter_swanns_lowtol, plot_Q2_loss_vs_iter_powells_lowtol, layout = layout_Q2_loss_vs_steps, legend=true, size=(650, 650))
     plot!(yscale=:log10)
     xlabel!("Number of Gradient Steps")
     ylabel!("Objective Function Value (log scale)")
-    savefig("A1/assets/Q2_loss_vs_steps.svg")
+    savefig("assets/Q2_loss_vs_steps.svg")
 end
 
 # Block for Q2 Plots - HookeJeeves
@@ -353,7 +353,7 @@ begin
 
     layout_Q2_HJ =  @layout [a; b]
     plot(plot_Q2_HJ, plot_Q2_loss_vs_iter_HJ, layout = layout_Q2_HJ, size = (700, 800))
-    savefig("A1/assets/Q2_HookeJeeves_visualized.svg")
+    savefig("assets/Q2_HookeJeeves_visualized.svg")
 end
 
 # Block for Q3 Plots
@@ -448,15 +448,15 @@ begin
                     title!(plot_all_tolerances_loss_vs_steps, "Loss vs Gradient Steps\nInitial Parameters = $init_params")
                     xlabel!(plot_all_tolerances_loss_vs_steps, "Number of Gradient Descent Iterations")
                     ylabel!(plot_all_tolerances_loss_vs_steps, "Sum Squared Error")
-                    savefig("A1/assets/Q3_LossVsSteps_$index_param.svg")
+                    savefig("assets/Q3_LossVsSteps_$index_param.svg")
 
                     title!(plot_all_curves, "Best Fits from Optimization\nInitial Parameters = $init_params")
                     xlabel!(plot_all_curves, "t")
                     ylabel!(plot_all_curves, "y")
-                    savefig("A1/assets/Q3_BestFits_$index_param.svg")
+                    savefig("assets/Q3_BestFits_$index_param.svg")
                 end
 
-                output_file = open("A1/assets/Q3_OUTPUTGradient_$index_param.txt", "w")
+                output_file = open("assets/Q3_OUTPUTGradient_$index_param.txt", "w")
                 write(output_file, "Initial Parameter Guess for whole file: $init_params\n")
                 write(output_file, "Tolerances : $tolerances_array\n")
                 write(output_file, "Num Function Evals : $outputs_N_f_eval\n")
@@ -513,15 +513,15 @@ begin
             plot!(plot_HJ_lossvssteps, is, errors, yscale=:log10, lw=3, label="Initial Guess $index_param", color=index_param, shape = :circle, markersize=3)
         end
 
-        output_file = open("A1/assets/Q3HookeJeeves_$index_param.txt", "w")
+        output_file = open("assets/Q3HookeJeeves_$index_param.txt", "w")
         write(output_file, "Initial Parameter Guess for whole file: $init_params\n")
         write(output_file, "Num Function Evals : $N_f_eval\n")
         write(output_file, "Num Gradient Steps/Evals : $N_grad_f_eval\n")
         write(output_file, "Final Parameter Vectors : $final_param_vector\n")
         close(output_file)
     end
-    savefig(plot_HJ_lossvssteps, "A1/assets/Q3HookeJeeves_LossVsSteps.svg")
-    savefig(plot_HJ_curves_all_inits, "A1/assets/Q3HookeJeeves_BestFits.svg")
+    savefig(plot_HJ_lossvssteps, "assets/Q3HookeJeeves_LossVsSteps.svg")
+    savefig(plot_HJ_curves_all_inits, "assets/Q3HookeJeeves_BestFits.svg")
 end
 
 begin
@@ -572,7 +572,7 @@ begin
         plot!(plot_loss_manual_vs_autodiff, is, errors, yscale=:log10, lw=3, label="Automatic Differentiation")
     end
 
-    output_file = open("A1/assets/Q3_Autodiff_Comparison.txt", "w")
+    output_file = open("assets/Q3_Autodiff_Comparison.txt", "w")
     write(output_file, "Initial Parameter Guess for whole file: $init_params\n")
     write(output_file, "Tolerance: $tol\n")
     write(output_file, "\n")
@@ -585,5 +585,5 @@ begin
     write(output_file, "Final Parameter Vectors Autodiff : $output_result_autodiff\n")
     close(output_file)
 
-    savefig(plot_loss_manual_vs_autodiff, "A1/assets/Q3_Autodiff_Comparison_LossVsSteps.svg")
+    savefig(plot_loss_manual_vs_autodiff, "assets/Q3_Autodiff_Comparison_LossVsSteps.svg")
 end
