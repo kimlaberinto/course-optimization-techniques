@@ -382,57 +382,82 @@ function HookeJeeves(f, x_0, big_delta, small_delta, orthogonal_directions)
     info(LOGGER, "Entering Hooke-Jeeves...")
     @assert length(x_0) == length(orthogonal_directions)
 
+    N = length(orthogonal_directions)
     x_i_array = zeros(length(x_0), length(orthogonal_directions)+1)
 
     x_0_current = x_0
     x_i_array[:, 1] = x_0
+    current_big_delta = big_delta
 
     history = MVHistory()
     push!(history, :x_1, 0, x_i_array[:, 1])
     push!(history, :x_0_current, 0, x_0_current)
+    push!(history, :current_big_delta, 0, current_big_delta)
     
     iteration_number = 0
-    while !(big_delta < small_delta)
-        debug(LOGGER, "Start of Iteration Loop...")
+    while !(current_big_delta < small_delta)
         iteration_number += 1
+        debug(LOGGER, "Start of Iteration Loop... ($iteration_number)")
+
 
         #Exploratory Moves
-        debug(LOGGER, "Performing Exploratory Moves...")
+        debug(LOGGER, "Performing Exploratory Moves... (delta = $current_big_delta)")
+        prev_x = []
         for (index, direction) in enumerate(orthogonal_directions)
-            x_current = x_i_array[:, index] .+ big_delta .* direction
+            debug(LOGGER, "Trying out direction ($index): $direction")
+            debug(LOGGER, @sprintf "Trying from %s" x_i_array[:, index])
+            x_current = x_i_array[:, index] .+ current_big_delta * direction
 
             F_x_i =  f(x_i_array[:, index])
-            if f(x_current) < F_x_i
+            F_x_current_forward = f(x_current)
+            if F_x_current_forward < F_x_i
                 x_i_array[:, index+1] = x_current
+                debug(LOGGER, "Forward is good to $x_current")
             else
-                x_current = x_i_array[:, index] .- big_delta .* direction
+                x_current = x_i_array[:, index] .- current_big_delta * direction
+                F_x_current_backward = f(x_current)
                 
-                if f(x_current) < F_x_i
-                    x_i_array[:, index+1] = x_0_current
+                if F_x_current_backward < F_x_i
+                    x_i_array[:, index+1] = x_current
+                    debug(LOGGER, "Backward is good to $x_current")
+
                 else
                     x_i_array[:, index+1] = x_i_array[:, index]
+                    debug(LOGGER, @sprintf "Stay here at %s" x_i_array[:, index])
+                    @assert (F_x_current_forward >= F_x_i)
+                    @assert (F_x_current_backward >= F_x_i)
+
+
                 end
             end
         end
 
         # Pattern Move
-        debug(LOGGER, "Performing Pattern Move...")
-        if f(x_i_array[:, end]) < f(x_0_current)
-            x_i_array[:, 1] = x_i_array[:, end] .+ (x_i_array[:, end] .- x_0_current)
-            x_0_current = x_i_array[:, end]
+        debug(LOGGER, @sprintf "Performing Pattern Move Branching... with x_i_array[:, N+1] = %s" x_i_array[:, N+1])
+        if f(x_i_array[:, N+1]) < f(x_0_current)
+            debug(LOGGER, "Performing Pattern Move...")
+            x_i_array[:, 1] = x_i_array[:, N+1] .+ (x_i_array[:, N+1] .- x_0_current)
+            x_0_current = x_i_array[:, N+1]
+            debug(LOGGER, @sprintf "x_i_array[:, 1] updated to %s" x_i_array[:, 1])
+            debug(LOGGER, @sprintf "x_0_current updated to %s" x_0_current)
         
         elseif x_i_array[:, 1] == x_0_current
-            big_delta = big_delta / 10.
+            debug(LOGGER, "Pattern move not better x_i_array[:, 1] == x_0_current")
+            current_big_delta = current_big_delta / 10
+            debug(LOGGER, "Reduced big_delta to $current_big_delta")
         
         else
+            debug(LOGGER, "Pattern Move not better: Set x_i_array[:, 1] to x_0_current")
             x_i_array[:, 1] = x_0_current
+            debug(LOGGER, @sprintf "x_i_array[:, 1] updated to %s" x_i_array[:, 1])
 
         end
 
         push!(history, :x_1, iteration_number, x_i_array[:, 1])
         push!(history, :x_0_current, iteration_number, x_0_current)
-        push!(history, :x_end, iteration_number, x_i_array[:, end])
-        debug(LOGGER, "End of Iteration Loop...")
+        push!(history, :x_end, iteration_number, x_i_array[:, N+1])
+        push!(history, :current_big_delta, iteration_number, current_big_delta)
+        debug(LOGGER, "End of Iteration Loop... ($iteration_number)")
     end
 
     info(LOGGER, "Exiting Hooke-Jeeves...")
