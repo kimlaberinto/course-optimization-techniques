@@ -12,13 +12,8 @@ end
 
 function calculate_local_hessian_cond_number(x_input)
     hessian_matrix = hessian_rosenbrock(x_input)
-    eigenvals, eigenvectors = eigen(hessian_matrix)
-    eigenvals = @. abs(eigenvals)
 
-    min_eigenval = minimum(eigenvals)
-    max_eigenval = maximum(eigenvals)
-
-    cond_number = abs(max_eigenval) / abs(min_eigenval)
+    cond_number = cond(hessian_matrix)
 
     return cond_number
 end
@@ -37,12 +32,13 @@ title!("Rosenbrock Function Contours")
 p2 = contour(x_plot, y_plot, 
 (x, y) -> log(calculate_local_hessian_cond_number([x, y])), 
 fill=true,
-c = cgrad(:hawaii, scale=:exp),
-levels = -1:.5:60)
+c = cgrad(:devon, scale=:exp, rev=true),
+levels = 0:.5:60
+)
 
 contour!(x_plot, y_plot, 
         (x, y) -> log(calculate_local_hessian_cond_number([x, y])), 
-        levels = -1:.5:60,
+        levels = 0:.5:60,
         fill=false,
         c = :black)
 
