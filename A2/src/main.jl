@@ -1,4 +1,6 @@
 include("makeplots.jl")
 
-evaluateHookeJeeves()
-evaluateGradientDescent()
+println("\nHookeJeeves")
+@time evaluateHookeJeeves()
+println("\nGradient Descent")
+@time evaluateGradientDescent()
