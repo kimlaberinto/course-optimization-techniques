@@ -24,7 +24,7 @@ function secantLineSearch(grad_f::Function, x_0::Array, d::Array, linesearch_tol
         max_iter::Integer = 100) where T <: Real
     debug(LOGGER, "Entering Secant Line Search")
     alpha_current = 0.0;
-    alpha = 0.001;
+    alpha = 0.1; #Larger initial alpha. No more NaNs
     dphi_zero = grad_f(x_0)' * d
     dphi_current = dphi_zero
 
