@@ -118,7 +118,8 @@ function evaluateHookeJeeves()
     plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
     xlabel!(plot_losses, "Number of Hooke-Jeeves Outer-loop Iterations")
     ylabel!(plot_losses, "Loss")
-    savefig(plot_losses, "assets/HookeJeevesLossPlot.png")
+    title!(plot_losses, "Loss vs Iterations - Hooke-Jeeves")
+    savefig(plot_losses, "assets/HookeJeevesLossPlot.svg")
 end
 
 
