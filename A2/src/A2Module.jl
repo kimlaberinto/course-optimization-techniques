@@ -12,11 +12,40 @@ using ValueHistories #External Package for keeping track of values
 
 # Exports
 export conjugateGradient
+export secantLineSearch
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
 function __init__()
     Memento.register(LOGGER)
+end
+
+function secantLineSearch(grad_f::Function, x_0::Array, d::Array, linesearch_tol::T;
+        max_iter::Integer = 100) where T <: Real
+    debug(LOGGER, "Entering Secant Line Search")
+    alpha_current = 0.0;
+    alpha = 0.001;
+    dphi_zero = grad_f(x_0)' * d
+    dphi_current = dphi_zero
+
+    i = 0
+    while abs(dphi_current) > linesearch_tol*abs(dphi_zero)
+        alpha_old = alpha_current;
+        alpha_current = alpha;
+        dphi_old = dphi_current;
+        dphi_current = grad_f(x_0 .+ alpha_current.*d)' * d;
+        alpha = (dphi_current * alpha_old - dphi_old * alpha_current) / (dphi_current - dphi_old);
+        i += 1
+
+        if i >= max_iter && abs(dphi_current) < abs(dphi_zero)
+            debug(LOGGER, "Secant Line Search Terminating with i=$i")
+            break
+        end
+    end
+
+    full_Nd_point = x_0 .+ alpha_current.*d
+    debug(LOGGER, "Exiting Secant Line Search")
+    return full_Nd_point
 end
 
 function conjugateGradient(f::Function, grad_f::Function, x_0::Array, 
@@ -61,8 +90,9 @@ function conjugateGradient(f::Function, grad_f::Function, x_0::Array,
             end
 
             debug(LOGGER, "Entering Line Search...")
-            full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, s_new, x_current, 
-                tol_for_linesearch; linesearch_method = "SwannsBracketingMethod")
+            # full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, s_new, x_current, 
+            #    tol_for_linesearch; linesearch_method = "SwannsBracketingMethod")
+            full_Nd_minimizer = secantLineSearch(grad_f, x_current, s_new, tol_for_linesearch)
             # full_Nd_minimizer is already x_current + lambda*s_new
             x_current = full_Nd_minimizer;
             g_old = g_new
