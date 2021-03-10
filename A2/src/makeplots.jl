@@ -10,6 +10,7 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
 
 # Useful external modules
 using Plots
+using ValueHistories: MVHistory, History
 
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
@@ -35,8 +36,19 @@ function HessianRosenbrock5D(x::Array{T}) where T <: Real
     return autodiffHessianNDRosenbrock(5, x)
 end
 
-function generatePlot_LossVsIterations(history)
+function generatePlot_LossVsIterations(historyofhistories::MVHistory{History}, 
+    symbol_to_get::Symbol)
 
+    resultant_plot = plot()
+    is, xs = get(historyofhistories, symbol_to_get)
+    
+    errors = []
+    for (i, x) in zip(is, xs)
+        error = Rosenbrock5D(x)
+        push!(errors, error)
+    end
+    
+    resultant_plot = plot(is, errors, yscale=:log10, lw=3, shape = :circle, markersize=3)
 end
 
 function evaluateHookeJeeves()
@@ -50,6 +62,9 @@ function evaluateHookeJeeves()
                              [0., 0., 0., 0., 1.]]
     best_result, history = HookeJeeves(Rosenbrock5D, x_0, initial_delta, final_delta, 
         orthogonal_directions)
+
+    generatePlot_LossVsIterations(history, :x_1)
+    plot!()
 
     global N_f_evals
     @show N_f_evals
