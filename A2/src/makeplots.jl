@@ -60,6 +60,20 @@ function generatePlot_LossVsIterations(array_of_histories::Array{MVHistory{Histo
     return resultant_plot
 end
 
+function makeDataDict(initial_vector, final_vector, final_loss; 
+        N_f_evals = 0, N_grad_evals = 0, N_hessian_evals = 0)
+
+    return Dict(
+        "initial_vector" => initial_vector,
+        "final_vector" => final_vector,
+        "final_loss" => final_loss,
+        "N_f_evals" => N_f_evals,
+        "N_grad_evals" => N_grad_evals,
+        "N_hessian_evals" => N_hessian_evals
+    )
+
+end
+
 function onerunHookeJeeves(x_0::Array{Float64})
     initial_delta = 1.;
     final_delta = 1.e-3;
@@ -71,18 +85,18 @@ function onerunHookeJeeves(x_0::Array{Float64})
     global N_f_evals = 0;
     best_result, history = HookeJeeves(Rosenbrock5D, x_0, initial_delta, final_delta, 
         orthogonal_directions)
+    final_loss = Rosenbrock5D(best_result)
 
-    @show best_result
-    @show N_f_evals
-
-    data_dict = Dict()
+    data_dict = makeDataDict(x_0, best_result, final_loss; N_f_evals = N_f_evals)
 
     return data_dict, best_result, history
 end
 
 function evaluateHookeJeeves()
-    _, _, history = onerunHookeJeeves([0., 0., 0., 0., 0.])
+    data_dict, best_result, history = onerunHookeJeeves([0., 0., 0., 0., 0.])
 
+    @show data_dict
+    @show best_result
     generatePlot_LossVsIterations([history], ["Seed 1"], :x_1)
     plot!()
 end
