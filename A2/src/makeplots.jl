@@ -194,6 +194,58 @@ function evaluateConjugateGradientFletcherReeves()
     savefig(plot_losses, "assets/ConjugateGradientFletcherReeves_LossPlot.svg")
 end
 
+function evaluateConjugateGradientHestenesStiefel()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunConjugateGradient(x_0, "HestenesStiefel")
+        # @show typeof(history)
+        # @show typeof(array_of_histories)
+        # @show data_dict
+        # @show best_result
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/ConjugateGradientHestenesStiefel_TrialOutputs.yml", all_trial_dicts)
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_current)
+    xlabel!(plot_losses, "Number of Iterations/Updates")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations\nConjugate Gradient (Hestenes-Stiefel)")
+    savefig(plot_losses, "assets/ConjugateGradientHestenesStiefel_LossPlot.svg")
+end
+
+function evaluateConjugateGradientPolakRibiere()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunConjugateGradient(x_0, "PolakRibiere")
+        # @show typeof(history)
+        # @show typeof(array_of_histories)
+        # @show data_dict
+        # @show best_result
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/ConjugateGradientPolakRibiere_TrialOutputs.yml", all_trial_dicts)
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_current)
+    xlabel!(plot_losses, "Number of Iterations/Updates")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations\nConjugate Gradient (Polak-Ribière)")
+    savefig(plot_losses, "assets/ConjugateGradientPolakRibiere_LossPlot.svg")
+end
+
 function evaluateGradientDescent()
     array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
     array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
