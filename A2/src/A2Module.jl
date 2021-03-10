@@ -13,6 +13,7 @@ using ValueHistories #External Package for keeping track of values
 # Exports
 export conjugateGradient
 export secantLineSearch
+export powellsConjugateGradientMethod
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -46,6 +47,60 @@ function secantLineSearch(grad_f::Function, x_0::Array, d::Array, linesearch_tol
     full_Nd_point = x_0 .+ alpha_current.*d
     debug(LOGGER, "Exiting Secant Line Search")
     return full_Nd_point
+end
+
+function powellsConjugateGradientMethod(f::Function, x_0::Array, tol::T; 
+    max_iter::Integer = 1000, linesearch_tol = 1e-3) where T <: Real
+    info(LOGGER, "Entering Powells Conjugate Gradient")
+
+    search_dir_array = Array{Array}(undef, length(x_0)+1)
+    for i in 1:length(x_0)
+        search_dir_array[i] = zeros(length(x_0))
+        search_dir_array[i][i] = 1
+    end
+
+    full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[length(x_0)], x_0, linesearch_tol;
+        linesearch_method = "SwannsBracketingMethod")
+    X = full_Nd_minimizer;
+    C = false;
+    k = 0;
+
+    history = MVHistory()
+    push!(history, :x_current, 0, x_0)
+
+    while C == false
+        Y = X;
+        k += 1;
+        for i in 1:length(x_0)
+            #Keep updating X using line searches in the s_i directions
+            # @show search_dir_array[i]
+            # @show X
+            full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[i], X, 
+                linesearch_tol; linesearch_method = "SwannsBracketingMethod")
+            X = full_Nd_minimizer;
+        end
+        search_dir_array[end] = X .- Y;
+
+        full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[end], X, 
+            linesearch_tol; linesearch_method = "SwannsBracketingMethod")
+        X = full_Nd_minimizer;
+
+        f_X = f(X)
+        f_Y = f(Y)
+        if k > max_iter || (abs(f_X - f_Y) / max(abs(f_X), 1e-10)) < tol
+            C = true
+        else
+            for i in 1:length(x_0)
+                search_dir_array[i] = search_dir_array[i+1]
+            end
+        end
+
+        history = MVHistory()
+        push!(history, :x_current, k, X)
+    end
+
+    info(LOGGER, "Exiting Powells Conjugate Gradient")
+    return X, history
 end
 
 function conjugateGradient(f::Function, grad_f::Function, x_0::Array, 
