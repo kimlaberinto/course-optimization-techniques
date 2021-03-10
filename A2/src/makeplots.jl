@@ -60,8 +60,7 @@ function generatePlot_LossVsIterations(array_of_histories::Array{MVHistory{Histo
     return resultant_plot
 end
 
-function evaluateHookeJeeves()
-    x_0 = [0., 0., 0., 0., 0.];
+function onerunHookeJeeves(x_0::Array{Float64})
     initial_delta = 1.;
     final_delta = 1.e-3;
     orthogonal_directions = [[1., 0., 0., 0., 0.],
@@ -73,9 +72,19 @@ function evaluateHookeJeeves()
     best_result, history = HookeJeeves(Rosenbrock5D, x_0, initial_delta, final_delta, 
         orthogonal_directions)
 
-    generatePlot_LossVsIterations([history], ["Seed 1"], :x_1)
-    plot!()
-
     @show best_result
     @show N_f_evals
+
+    data_dict = Dict()
+
+    return data_dict, best_result, history
 end
+
+function evaluateHookeJeeves()
+    _, _, history = onerunHookeJeeves([0., 0., 0., 0., 0.])
+
+    generatePlot_LossVsIterations([history], ["Seed 1"], :x_1)
+    plot!()
+end
+
+
