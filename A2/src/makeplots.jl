@@ -9,10 +9,14 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
     autodiffHessianNDRosenbrock
 
 # Useful external modules
+using Memento
 using OrderedCollections
 using Plots
 using ValueHistories: MVHistory, History
 import YAML
+
+# Suppress Memento from inner modules
+setlevel!(getlogger(A1Module), "not_set")
 
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
