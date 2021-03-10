@@ -9,6 +9,7 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
     autodiffHessianNDRosenbrock
 
 # Useful external modules
+using OrderedCollections
 using Plots
 using ValueHistories: MVHistory, History
 import YAML
@@ -16,11 +17,12 @@ import YAML
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
 
+#Generated Initial Vectors 2 to 5 are generated using generate_random_inits.jl
 const array_of_inits = [[ 0.00,  0.00,  0.00,  0.00,  0.00],
-                        [ 0.73,  2.35, -2.03, -3.47, -1.79],
-                        [ 2.13,  2.83,  0.64,  3.65,  1.21],
-                        [ 0.53, -2.40,  1.19,  1.17, -3.55],
-                        [-0.32, -1.61, -3.91, -3.10,  2.74]];
+                        [ 0.36,  1.18, -1.01, -1.73, -0.90],
+                        [ 1.07,  1.42,  0.32,  1.83,  0.61],
+                        [ 0.26, -1.20,  0.60,  0.59, -1.77],
+                        [-0.16, -0.81, -1.96, -1.55,  1.37]]; 
 
 # Define objective functions to use
 global N_f_evals = 0

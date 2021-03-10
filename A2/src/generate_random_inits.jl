@@ -1,6 +1,6 @@
 using Random
 
-const MIN_MAX_VAL = 4;
+const MIN_MAX_VAL = 2;
 function generate_random_inits()
     rng = Random.MersenneTwister(1234);
 
