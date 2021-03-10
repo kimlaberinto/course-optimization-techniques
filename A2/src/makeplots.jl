@@ -93,7 +93,6 @@ function onerunHookeJeeves(x_0::Array{Float64})
 end
 
 function evaluateHookeJeeves()
-
     array_of_inits = [[0., 0., 0., 0., 0.],
     (rand(5).*2 .- 1).*2,
     (rand(5).*2 .- 1).*2];
@@ -104,18 +103,20 @@ function evaluateHookeJeeves()
 
     for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
         data_dict, best_result, history = onerunHookeJeeves(x_0)
-        @show typeof(history)
-        @show typeof(array_of_histories)
-        @show data_dict
-        @show best_result
+        # @show typeof(history)
+        # @show typeof(array_of_histories)
+        # @show data_dict
+        # @show best_result
 
         array_of_trials_dicts[i] = Dict(label => data_dict)
         array_of_histories[i] = history
     end
 
-    @show length(array_of_histories)
-    generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
-    plot!()
+    # @show length(array_of_histories)
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
+    xlabel!(plot_losses, "Number of Hooke-Jeeves Outer-loop Iterations")
+    ylabel!(plot_losses, "Loss")
+    savefig(plot_losses, "../assets/HookeJeevesLossPlot.png")
 end
 
 
