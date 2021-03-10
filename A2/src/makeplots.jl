@@ -36,19 +36,28 @@ function HessianRosenbrock5D(x::Array{T}) where T <: Real
     return autodiffHessianNDRosenbrock(5, x)
 end
 
-function generatePlot_LossVsIterations(historyofhistories::MVHistory{History}, 
+function generatePlot_LossVsIterations(array_of_histories::Array{MVHistory{History}}, 
+    array_of_labels::Array{String},
     symbol_to_get::Symbol)
 
+    @assert length(array_of_histories) == length(array_of_labels)
+
     resultant_plot = plot()
-    is, xs = get(historyofhistories, symbol_to_get)
-    
-    errors = []
-    for (i, x) in zip(is, xs)
-        error = Rosenbrock5D(x)
-        push!(errors, error)
+
+    for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
+        is, xs = get(historyofhistories, symbol_to_get)
+        
+        errors = []
+        for (i, x) in zip(is, xs)
+            error = Rosenbrock5D(x)
+            push!(errors, error)
+        end
+
+        plot!(resultant_plot, is, errors, label=label,
+            yscale=:log10, lw=3, shape = :circle, markersize=3)
     end
-    
-    resultant_plot = plot(is, errors, yscale=:log10, lw=3, shape = :circle, markersize=3)
+
+    return resultant_plot
 end
 
 function evaluateHookeJeeves()
@@ -59,13 +68,14 @@ function evaluateHookeJeeves()
                              [0., 1., 0., 0., 0.],
                              [0., 0., 1., 0., 0.],
                              [0., 0., 0., 1., 0.],
-                             [0., 0., 0., 0., 1.]]
+                             [0., 0., 0., 0., 1.]];
+    global N_f_evals = 0;
     best_result, history = HookeJeeves(Rosenbrock5D, x_0, initial_delta, final_delta, 
         orthogonal_directions)
 
-    generatePlot_LossVsIterations(history, :x_1)
+    generatePlot_LossVsIterations([history], ["Seed 1"], :x_1)
     plot!()
 
-    global N_f_evals
+    @show best_result
     @show N_f_evals
 end
