@@ -50,9 +50,9 @@ function conjugateGradient(f::Function, grad_f::Function, x_0::Array,
                 if method == "FletcherReeves"
                     gamma = norm(g_new)^2 / norm(g_old)^2
                 elseif method == "HestenesStiefel"
-                    error("Undefined method '$method' for Conjugate-Gradient Descent")
+                    gamma = (g_old' * g_new) / (g_old' * s_old)
                 elseif method == "PolakRibiere"
-                    error("Undefined method '$method' for Conjugate-Gradient Descent")
+                    gamma = (g_old' * g_new) / norm(g_old)^2
                 else
                     error("Undefined method '$method' for Conjugate-Gradient Descent")
                 end
