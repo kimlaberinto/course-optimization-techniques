@@ -77,7 +77,7 @@ function conjugateGradient(f::Function, grad_f::Function, x_0::Array,
     end
 
     info(LOGGER, "Exiting Conjugate Gradient ($method)")
-    return x_current
+    return x_current, history
 end
 
 end

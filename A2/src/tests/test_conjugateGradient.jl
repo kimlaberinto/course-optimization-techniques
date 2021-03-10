@@ -24,9 +24,11 @@ function _HessianRosenbrock5D(x::Array{T}) where T <: Real
 end
 
 @testset "Converge to Approx. True Min from Origin" begin
-    @test isapprox(conjugateGradient(_Rosenbrock5D, _GradRosenbrock5D, [0.0, 0.0, 0.0, 0.0, 0.0], 
-        1e-4, 10000, 10; method="FletcherReeves", tol_for_linesearch=1e-3), 
-        [1., 1., 1., 1., 1.]; atol=1e-3)
+    @test begin
+        result, _ = conjugateGradient(_Rosenbrock5D, _GradRosenbrock5D, [0.0, 0.0, 0.0, 0.0, 0.0], 
+        1e-4, 10000, 10; method="FletcherReeves", tol_for_linesearch=1e-3)
+        isapprox(result, [1., 1., 1., 1., 1.]; atol=1e-3)
+    end
 end
 
 
