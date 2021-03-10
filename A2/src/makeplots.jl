@@ -15,6 +15,12 @@ using ValueHistories: MVHistory, History
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
 
+const array_of_inits = [[ 0.00,  0.00,  0.00,  0.00,  0.00],
+                        [ 0.73,  2.35, -2.03, -3.47, -1.79],
+                        [ 2.13,  2.83,  0.64,  3.65,  1.21],
+                        [ 0.53, -2.40,  1.19,  1.17, -3.55],
+                        [-0.32, -1.61, -3.91, -3.10,  2.74]];
+
 # Define objective functions to use
 global N_f_evals = 0
 global N_grad_evals = 0
@@ -93,10 +99,6 @@ function onerunHookeJeeves(x_0::Array{Float64})
 end
 
 function evaluateHookeJeeves()
-    array_of_inits = [[0., 0., 0., 0., 0.],
-    (rand(5).*2 .- 1).*2,
-    (rand(5).*2 .- 1).*2];
-
     array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
     array_of_trials_dicts = Array{Dict}(undef, length(array_of_inits));
     array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
@@ -116,7 +118,7 @@ function evaluateHookeJeeves()
     plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
     xlabel!(plot_losses, "Number of Hooke-Jeeves Outer-loop Iterations")
     ylabel!(plot_losses, "Loss")
-    savefig(plot_losses, "../assets/HookeJeevesLossPlot.png")
+    savefig(plot_losses, "assets/HookeJeevesLossPlot.png")
 end
 
 
