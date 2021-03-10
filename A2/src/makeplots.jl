@@ -11,6 +11,7 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
 # Useful external modules
 using Plots
 using ValueHistories: MVHistory, History
+import YAML
 
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
@@ -69,7 +70,7 @@ end
 function makeDataDict(initial_vector, final_vector, final_loss; 
         N_f_evals = 0, N_grad_evals = 0, N_hessian_evals = 0)
 
-    return Dict(
+    return OrderedDict(
         "initial_vector" => initial_vector,
         "final_vector" => final_vector,
         "final_loss" => final_loss,
@@ -100,7 +101,7 @@ end
 
 function evaluateHookeJeeves()
     array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
-    array_of_trials_dicts = Array{Dict}(undef, length(array_of_inits));
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
     array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
 
     for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
@@ -110,11 +111,14 @@ function evaluateHookeJeeves()
         # @show data_dict
         # @show best_result
 
-        array_of_trials_dicts[i] = Dict(label => data_dict)
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
         array_of_histories[i] = history
     end
 
-    # @show length(array_of_histories)
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/HookeJeeves_TrialOutputs.yml", all_trial_dicts)
+
+
     plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
     xlabel!(plot_losses, "Number of Hooke-Jeeves Outer-loop Iterations")
     ylabel!(plot_losses, "Loss")
