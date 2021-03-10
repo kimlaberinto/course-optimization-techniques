@@ -93,11 +93,28 @@ function onerunHookeJeeves(x_0::Array{Float64})
 end
 
 function evaluateHookeJeeves()
-    data_dict, best_result, history = onerunHookeJeeves([0., 0., 0., 0., 0.])
 
-    @show data_dict
-    @show best_result
-    generatePlot_LossVsIterations([history], ["Seed 1"], :x_1)
+    array_of_inits = [[0., 0., 0., 0., 0.],
+    (rand(5).*2 .- 1).*2,
+    (rand(5).*2 .- 1).*2];
+
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{Dict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunHookeJeeves(x_0)
+        @show typeof(history)
+        @show typeof(array_of_histories)
+        @show data_dict
+        @show best_result
+
+        array_of_trials_dicts[i] = Dict(label => data_dict)
+        array_of_histories[i] = history
+    end
+
+    @show length(array_of_histories)
+    generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_1)
     plot!()
 end
 
