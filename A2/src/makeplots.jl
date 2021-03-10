@@ -17,6 +17,7 @@ import YAML
 
 # Suppress Memento from inner modules
 setlevel!(getlogger(A1Module), "not_set")
+setlevel!(getlogger(A2Module.A1Module), "not_set")
 
 # Define general settings (N = 5 dimensional rosenbrock)
 const test_initial_point = zeros(5);
@@ -103,6 +104,21 @@ function onerunGradientDescent(x_0::Array{Float64})
     return data_dict, best_result, history
 end
 
+function onerunPowellConjugateGradient(x_0::Array{T}) where T <: Real
+    tol = 1e-6
+    linesearch_tol = 1e-3
+    max_iter = 10000;
+    global N_f_evals = 0;
+    best_result, history = powellsConjugateGradientMethod(Rosenbrock5D, x_0, 
+        tol; max_iter = max_iter, linesearch_tol=linesearch_tol)
+    final_loss = Rosenbrock5D(best_result)
+
+    data_dict = makeDataDict(x_0, best_result, final_loss;
+        N_f_evals = N_f_evals)
+
+    return data_dict, best_result, history
+end
+
 function onerunConjugateGradient(x_0::Array{T}, method::String) where T <: Real
     tol_for_linesearch = 1e-3;
     g_tol = 1e-4
@@ -167,6 +183,28 @@ function evaluateGradientDescent()
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations - Gradient Descent")
     savefig(plot_losses, "assets/GradientDescentLossPlot.svg")
+end
+
+function evaluatePowellConjugateGradient()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunPowellConjugateGradient(x_0)
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/PowellConjugateGradient_TrialOutputs.yml", all_trial_dicts)
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_current)
+    xlabel!(plot_losses, "Number of Iterations")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations\nPowell Conjugate Gradient")
+    savefig(plot_losses, "assets/PowellConjugateGradient_LossPlot.svg")
 end
 
 function evaluateConjugateGradientFletcherReeves()

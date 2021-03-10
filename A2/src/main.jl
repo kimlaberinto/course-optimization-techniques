@@ -6,6 +6,9 @@ println("\nHookeJeeves")
 println("\nGradient Descent")
 @time evaluateGradientDescent()
 
+println("\nPowell Conjugate Gradient Descent")
+@time evaluatePowellConjugateGradient()
+
 println("\nConjugate Gradient (Fletcher-Reeves)")
 @time evaluateConjugateGradientFletcherReeves()
 

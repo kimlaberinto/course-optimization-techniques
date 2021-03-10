@@ -75,15 +75,27 @@ function powellsConjugateGradientMethod(f::Function, x_0::Array, tol::T;
             #Keep updating X using line searches in the s_i directions
             # @show search_dir_array[i]
             # @show X
-            full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[i], X, 
-                linesearch_tol; linesearch_method = "SwannsBracketingMethod")
-            X = full_Nd_minimizer;
+            try 
+                full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[i], X, 
+                    linesearch_tol; linesearch_method = "SwannsBracketingMethod")
+                X = full_Nd_minimizer;
+            catch e
+                warn(LOGGER, "Caught an error during Powells Conjugate Gradient with x_0=$x_0. Aborting and returning history. $e")
+                push!(history, :x_current, k, X)
+                return X, history
+            end
         end
         search_dir_array[end] = X .- Y;
 
-        full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[end], X, 
-            linesearch_tol; linesearch_method = "SwannsBracketingMethod")
-        X = full_Nd_minimizer;
+        try
+            full_Nd_minimizer, _, _ = A1Module.Q1LineSearch(f, search_dir_array[end], X, 
+                linesearch_tol; linesearch_method = "SwannsBracketingMethod")
+            X = full_Nd_minimizer;
+        catch e
+            warn(LOGGER, "Caught an error during Powells Conjugate Gradient with x_0=$x_0. Aborting and returning history. $e")
+            push!(history, :x_current, k, X)
+            return X, history
+        end
 
         f_X = f(X)
         f_Y = f(Y)
@@ -95,7 +107,6 @@ function powellsConjugateGradientMethod(f::Function, x_0::Array, tol::T;
             end
         end
 
-        history = MVHistory()
         push!(history, :x_current, k, X)
     end
 
