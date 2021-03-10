@@ -81,6 +81,22 @@ function makeDataDict(initial_vector, final_vector, final_loss;
 
 end
 
+function onerunGradientDescent(x_0::Array{Float64})
+    tol = 1e-4;
+    global N_f_evals = 0;
+    global N_grad_evals = 0;
+    best_result, history = A1Module.Q2SteepestDescent(Rosenbrock5D, 
+        GradRosenbrock5D, x_0, tol;
+        linesearch_method="SwannsBracketingMethod")
+    final_loss = Rosenbrock5D(best_result)
+    
+    data_dict = makeDataDict(x_0, best_result, final_loss; 
+        N_f_evals = N_f_evals,
+        N_grad_evals = N_grad_evals)
+
+    return data_dict, best_result, history
+end
+
 function onerunHookeJeeves(x_0::Array{Float64})
     initial_delta = 1.;
     final_delta = 1.e-3;
@@ -126,4 +142,29 @@ function evaluateHookeJeeves()
     savefig(plot_losses, "assets/HookeJeevesLossPlot.svg")
 end
 
+function evaluateGradientDescent()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunGradientDescent(x_0)
+        # @show typeof(history)
+        # @show typeof(array_of_histories)
+        # @show data_dict
+        # @show best_result
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/GradientDescent_TrialOutputs.yml", all_trial_dicts)
+
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :Nd_point)
+    xlabel!(plot_losses, "Number of Gradient Descent Iterations")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations - Gradient Descent")
+    savefig(plot_losses, "assets/GradientDescentLossPlot.svg")
+end
 
