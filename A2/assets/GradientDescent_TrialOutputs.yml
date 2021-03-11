@@ -15,6 +15,7 @@ Initial Vector 1:
   N_f_evals: 330625
   N_grad_evals: 11809
   N_hessian_evals: 0
+  N_linsys_solves: 0
 Initial Vector 2:
   initial_vector:
     - 0.36
@@ -32,6 +33,7 @@ Initial Vector 2:
   N_f_evals: 332725
   N_grad_evals: 11884
   N_hessian_evals: 0
+  N_linsys_solves: 0
 Initial Vector 3:
   initial_vector:
     - 1.07
@@ -49,6 +51,7 @@ Initial Vector 3:
   N_f_evals: 301421
   N_grad_evals: 10766
   N_hessian_evals: 0
+  N_linsys_solves: 0
 Initial Vector 4:
   initial_vector:
     - 0.26
@@ -66,6 +69,7 @@ Initial Vector 4:
   N_f_evals: 327321
   N_grad_evals: 11691
   N_hessian_evals: 0
+  N_linsys_solves: 0
 Initial Vector 5:
   initial_vector:
     - -0.16
@@ -83,3 +87,4 @@ Initial Vector 5:
   N_f_evals: 330065
   N_grad_evals: 11789
   N_hessian_evals: 0
+  N_linsys_solves: 0

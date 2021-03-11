@@ -1,8 +1,5 @@
 include("makeplots.jl")
 
-println("\nHookeJeeves")
-@time evaluateHookeJeeves()
-
 println("\nGradient Descent")
 @time evaluateGradientDescent()
 
@@ -18,5 +15,14 @@ println("\nConjugate Gradient (Hestenes-Stiefel)")
 println("\nConjugate Gradient (Polak-Ribiere)")
 @time evaluateConjugateGradientPolakRibiere()
 
+println("\nHookeJeeves")
+@time evaluateHookeJeeves()
+
+println("\nNelder Mead")
+@time evaluateNelderMead()
+
 println("\nOriginal Newtons Method")
 @time evaluateOriginalNewtonsMethod()
+
+println("\nModified Newtons Method with Levenberg Marquardt")
+@time evaluateModifiedNewtonsWithLM()

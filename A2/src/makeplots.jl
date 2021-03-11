@@ -236,7 +236,7 @@ function evaluateGradientDescent()
     xlabel!(plot_losses, "Number of Gradient Descent Iterations")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations - Gradient Descent")
-    savefig(plot_losses, "assets/GradientDescentLossPlot.svg")
+    savefig(plot_losses, "assets/GradientDescentLossPlot.png")
 end
 
 function evaluatePowellConjugateGradient()
@@ -258,7 +258,7 @@ function evaluatePowellConjugateGradient()
     xlabel!(plot_losses, "Number of Iterations")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nPowell Conjugate Gradient")
-    savefig(plot_losses, "assets/PowellConjugateGradient_LossPlot.svg")
+    savefig(plot_losses, "assets/PowellConjugateGradient_LossPlot.png")
 end
 
 function evaluateConjugateGradientFletcherReeves()
@@ -284,7 +284,7 @@ function evaluateConjugateGradientFletcherReeves()
     xlabel!(plot_losses, "Number of Iterations/Updates")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nConjugate Gradient (Fletcher-Reeves)")
-    savefig(plot_losses, "assets/ConjugateGradientFletcherReeves_LossPlot.svg")
+    savefig(plot_losses, "assets/ConjugateGradientFletcherReeves_LossPlot.png")
 end
 
 function evaluateConjugateGradientHestenesStiefel()
@@ -310,7 +310,7 @@ function evaluateConjugateGradientHestenesStiefel()
     xlabel!(plot_losses, "Number of Iterations/Updates")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nConjugate Gradient (Hestenes-Stiefel)")
-    savefig(plot_losses, "assets/ConjugateGradientHestenesStiefel_LossPlot.svg")
+    savefig(plot_losses, "assets/ConjugateGradientHestenesStiefel_LossPlot.png")
 end
 
 function evaluateConjugateGradientPolakRibiere()
@@ -336,7 +336,7 @@ function evaluateConjugateGradientPolakRibiere()
     xlabel!(plot_losses, "Number of Iterations/Updates")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nConjugate Gradient (Polak-Ribière)")
-    savefig(plot_losses, "assets/ConjugateGradientPolakRibiere_LossPlot.svg")
+    savefig(plot_losses, "assets/ConjugateGradientPolakRibiere_LossPlot.png")
 end
 
 function evaluateHookeJeeves()
@@ -363,7 +363,7 @@ function evaluateHookeJeeves()
     xlabel!(plot_losses, "Number of Hooke-Jeeves Outer-loop Iterations")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations - Hooke-Jeeves")
-    savefig(plot_losses, "assets/HookeJeevesLossPlot.svg")
+    savefig(plot_losses, "assets/HookeJeevesLossPlot.png")
 end
 
 function evaluateNelderMead()
@@ -386,7 +386,7 @@ function evaluateNelderMead()
     xlabel!(plot_losses, "Number of Iterations")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nNelder-Mead Simplex Search")
-    savefig(plot_losses, "assets/NelderMead_LossPlot.svg")
+    savefig(plot_losses, "assets/NelderMead_LossPlot.png")
 end
 
 function evaluateOriginalNewtonsMethod()
@@ -408,7 +408,7 @@ function evaluateOriginalNewtonsMethod()
     xlabel!(plot_losses, "Number of Iterations")
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations\nOriginal Newtons Method")
-    savefig(plot_losses, "assets/OriginalNewtonsMethod_LossPlot.svg")
+    savefig(plot_losses, "assets/OriginalNewtonsMethod_LossPlot.png")
 
     begin
         plot_condnum_matrices = plot()
@@ -425,7 +425,7 @@ function evaluateOriginalNewtonsMethod()
         xlabel!(plot_condnum_matrices, "Number of Iterations")
         ylabel!(plot_condnum_matrices, "Condition Number of Hessian")
         title!(plot_condnum_matrices, "Hessian Condition Number (log scale) vs Iterations\nOriginal Newtons Method")
-        savefig(plot_condnum_matrices, "assets/OriginalNewtonsMethod_ConditionNumberHessianPlot.svg")
+        savefig(plot_condnum_matrices, "assets/OriginalNewtonsMethod_ConditionNumberHessianPlot.png")
     end
 end
 
@@ -453,7 +453,7 @@ function evaluateModifiedNewtonsWithLM()
         xlabel!(plot_losses, "Number of Iterations")
         ylabel!(plot_losses, "Loss")
         title!(plot_losses, "Loss vs Iterations\nModified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param)")
-        savefig(plot_losses, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_$mu_index.svg")
+        savefig(plot_losses, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_$mu_index.png")
 
         begin
             plot_condnum_matrices = plot()
@@ -470,7 +470,7 @@ function evaluateModifiedNewtonsWithLM()
             xlabel!(plot_condnum_matrices, "Number of Iterations")
             ylabel!(plot_condnum_matrices, "Condition Number of Matrix")
             title!(plot_condnum_matrices, "Matrix Condition Number (log scale) vs Iterations\nModified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param)")
-            savefig(plot_condnum_matrices, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_$mu_index.svg")
+            savefig(plot_condnum_matrices, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_$mu_index.png")
         end
 
         begin
@@ -510,7 +510,7 @@ function evaluateModifiedNewtonsWithLM()
 
             layout_combined = @layout [a; b]
             plot_combined = plot(plot_condnum_matrices_hessian, plot_condnum_matrices_with_mu, layout = layout_combined)
-            savefig(plot_combined, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_$mu_index.svg")
+            savefig(plot_combined, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_$mu_index.png")
         end
 
     end

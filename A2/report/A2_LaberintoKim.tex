@@ -1,0 +1,244 @@
+\documentclass{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{svg} %For including svgs
+\svgpath{{../assets/}}
+\usepackage[margin=1in]{geometry} %Change margins
+\usepackage{hyperref} %For hyperlinks in table of contents and other
+\usepackage{float} %For using H in figure
+\usepackage{subcaption} %For subfigures
+\usepackage{booktabs} %For tables
+\usepackage{multirow} %For tables
+
+\usepackage[charsperline=120]{jlcode} %For Julia Code Listing https://github.com/wg030/jlcode
+
+\addtolength{\jot}{1em} %https://tex.stackexchange.com/questions/14679/amsmath-align-environment-row-spacing
+
+\title{Optimization Assignment 2\\Comparison between Algorithms}
+\date{Winter 2021}
+\author{Kim Paolo Laberinto (7771083)}
+
+\begin{document}
+    \maketitle
+    \newpage
+
+    \tableofcontents
+    \newpage
+
+
+    \section{Methodology}
+
+    In this report several algorithms were analyzed and compared in terms of their performance metrics.
+    The metrics used are the following
+    \begin{enumerate}
+        \item Number of Function Evaluations
+        \item Number of Gradient Function Evaluations
+        \item Number of Hessian Function Evaluations
+        \item Number of Linear System Solves (e.g. inversions and similar)
+    \end{enumerate}
+
+    These performance metrics are significant as depending on the objective function to optimize, 
+    the various function evaluations can be very computationally expensive.
+
+    Each algorithm was also tested with several initial vectors. These are found in Table \ref{tab:initial_vectors}.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{@{}ll@{}}
+        \toprule
+                                  & \textbf{Vector}                     \\ \midrule
+        \textbf{Initial Vector 1} & [ 0.00,  0.00,  0.00,  0.00,  0.00] \\
+        \textbf{Initial Vector 2} & [ 0.36,  1.18, -1.01, -1.73, -0.90] \\
+        \textbf{Initial Vector 3} & [ 1.07,  1.42,  0.32,  1.83,  0.61] \\
+        \textbf{Initial Vector 4} & [ 0.26, -1.20,  0.60,  0.59, -1.77] \\
+        \textbf{Initial Vector 5} & [-0.16, -0.81, -1.96, -1.55,  1.37] \\ \bottomrule
+        \end{tabular}
+        \caption{Table of Initial Vectors used for analysing performance}
+        \label{tab:initial_vectors}
+    \end{table}
+
+    \subsection{Limitations}
+
+    Note that this report is solely for educational purposes only in possible methods of analysis, 
+    and not meant to be used to rigorously compare the various algorithms.
+
+    Performance comparisons are highly dependent on the implementation of the algorithm itself.
+    The implementations used in this report are not optimized.
+
+    \subsection{Further Areas to Explore}
+
+    There are other aspects to explore for potential future performance analysis.
+    These include:
+
+    \begin{enumerate}
+        \item Memory Allocation
+        \item Time to run
+        \item Profiling the code to examine which lines run the longest
+    \end{enumerate}
+
+    \section{Algorithm Performances - Loss vs Iterations}
+
+    In this section, the algorithm specific loss vs iterations plots can be seen, to visually compare how many iterations it takes to reach a specific loss value.
+    More analysis of the performance metrics can be found in the Comparison Between Algorithms section.
+    
+    Note that for the Modified Newton's Method with Levenberg-Marquardt Modification, the plots comparing the influence of the mu parameter can also be seen in this section.
+
+    \subsection{Steepest Descent}
+
+    \subsection{Powell's Conjugate Direction}
+
+    \subsection{Conjugate Gradient Techniques}
+
+    \subsection{Hooke Jeeves}
+
+    \subsection{Nelder-Mead Simplex Search}
+
+    \subsection{Original Newton's Method}
+
+    \subsection{Modified Newton's Method with Levenberg-Marquardt Modification}
+
+    \section{Comparison between Algorithms}
+
+    \subsection{Number of Function Evaluations}
+
+    \appendix
+    \section{All Plots}
+
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ConjugateGradientFletcherReeves_LossPlot.svg}
+        \caption{ConjugateGradientFletcherReeves_LossPlot.svg}
+        \label{fig:ConjugateGradientFletcherReeves_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ConjugateGradientHestenesStiefel_LossPlot.svg}
+        \caption{ConjugateGradientHestenesStiefel_LossPlot.svg}
+        \label{fig:ConjugateGradientHestenesStiefel_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ConjugateGradientPolakRibiere_LossPlot.svg}
+        \caption{ConjugateGradientPolakRibiere_LossPlot.svg}
+        \label{fig:ConjugateGradientPolakRibiere_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{GradientDescentLossPlot.svg}
+        \caption{GradientDescentLossPlot.svg}
+        \label{fig:GradientDescentLossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{HookeJeevesLossPlot.svg}
+        \caption{HookeJeevesLossPlot.svg}
+        \label{fig:HookeJeevesLossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{NelderMead_LossPlot.svg}
+        \caption{NelderMead_LossPlot.svg}
+        \label{fig:NelderMead_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+        \caption{OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+        \label{fig:OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{OriginalNewtonsMethod_LossPlot.svg}
+        \caption{OriginalNewtonsMethod_LossPlot.svg}
+        \label{fig:OriginalNewtonsMethod_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{PowellConjugateGradient_LossPlot.svg}
+        \caption{PowellConjugateGradient_LossPlot.svg}
+        \label{fig:PowellConjugateGradient_LossPlot.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+        \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+        \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+        \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+        \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+        \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+        \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_1.svg}
+        \caption{ModifiedNewtonsWithLM_LossPlot_1.svg}
+        \label{fig:ModifiedNewtonsWithLM_LossPlot_1.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_2.svg}
+        \caption{ModifiedNewtonsWithLM_LossPlot_2.svg}
+        \label{fig:ModifiedNewtonsWithLM_LossPlot_2.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_3.svg}
+        \caption{ModifiedNewtonsWithLM_LossPlot_3.svg}
+        \label{fig:ModifiedNewtonsWithLM_LossPlot_3.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+        \caption{ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+        \label{fig:ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+        \caption{ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+        \label{fig:ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+        \caption{ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+        \label{fig:ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+    \end{figure}
+    
+
+    \section{Source Code}
+
+    %main
+    %makeplots
+    %objectivefunction
+    %generate_random_inits
+    %A1Module
+    %A2Module
+
+\end{document}
