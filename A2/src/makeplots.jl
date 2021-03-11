@@ -441,16 +441,16 @@ function evaluateModifiedNewtonsWithLM()
                 plot_condnum_matrices_with_mu = plot()
                 for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
                     is, matrices = get(historyofhistories, :LM_matrix)
-                    condnums = []
+                    condnums_with_diag = []
                     for (i, M) in zip(is, matrices)
                         condnum = cond(M)
-                        push!(condnums, condnum)
+                        push!(condnums_with_diag, condnum)
                     end
-                    plot!(plot_condnum_matrices_with_mu, is, condnums, label=label,
+                    plot!(plot_condnum_matrices_with_mu, is, condnums_with_diag, label=label,
                         yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:topright)
                 end
                 xlabel!(plot_condnum_matrices_with_mu, "Number of Iterations")
-                ylabel!(plot_condnum_matrices_with_mu, "Condition Number of LM Matrix")
+                ylabel!(plot_condnum_matrices_with_mu, "Condition Number\nLM Matrix")
                 title!(plot_condnum_matrices_with_mu, "LM Matrix Condition Number vs Iterations")
             end
 
@@ -458,22 +458,21 @@ function evaluateModifiedNewtonsWithLM()
                 plot_condnum_matrices_hessian = plot()
                 for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
                     is, matrices = get(historyofhistories, :hessian_current)
-                    condnums = []
+                    condnums_hessian = []
                     for (i, M) in zip(is, matrices)
                         condnum = cond(M)
-                        push!(condnums, condnum)
+                        push!(condnums_hessian, condnum)
                     end
-                    plot!(plot_condnum_matrices_hessian, is, condnums, label=label,
+                    plot!(plot_condnum_matrices_hessian, is, condnums_hessian, label=label,
                         yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:bottomright)
                 end
                 xlabel!(plot_condnum_matrices_hessian, "Number of Iterations")
-                ylabel!(plot_condnum_matrices_hessian, "Condition Number of Pure Hessian")
+                ylabel!(plot_condnum_matrices_hessian, "Condition Number\nPure Hessian Matrix")
                 title!(plot_condnum_matrices_hessian, "Hessian Condition Number (no mu diagonal) vs Iterations")
             end
 
             layout_combined = @layout [a; b]
             plot_combined = plot(plot_condnum_matrices_hessian, plot_condnum_matrices_with_mu, layout = layout_combined)
-            title!(plot_combined, "Modified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param")
             savefig(plot_combined, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_$mu_index.svg")
         end
 
