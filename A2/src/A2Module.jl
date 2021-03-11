@@ -250,5 +250,34 @@ function modifiedNewtonsWithLMMethod(grad_f::Function, hessian_f::Function,
 
 end
 
+# https://c.mql5.com/31/43/garch-improved-nelder-mead-mt4-screen-9584.png
+function nelderMeadSimplexSearch(f::Function, x_0::Array{T}, 
+    initial_sidelength::T) where T <: Real
+    error("Undefined feature.")
+end
+
+function generateSimplex(basePoint::Array{T}, side_length::T) where T <: AbstractFloat
+    n = length(basePoint)
+
+    a = side_length * ( (sqrt(n+1) + (n - 1)) / (n * sqrt(2)))
+    b = side_length * ( (sqrt(n+1) - 1) / (n * sqrt(2)) )
+
+    list_of_points = Array{Array{T}}(undef, n+1)
+    for i in 1:n #Generate each point
+        newPoint = Array{T}(undef, n)
+        for j in 1:n # Define coordinates of new point
+            if i == j
+                newPoint[j] = basePoint[j] + a;
+            else
+                newPoint[j] = basePoint[j] + b;
+            end
+        end
+        list_of_points[i] = newPoint
+    end
+    list_of_points[end] = basePoint
+
+    @assert length(list_of_points) == (n + 1)
+    return list_of_points
+end
 
 end
