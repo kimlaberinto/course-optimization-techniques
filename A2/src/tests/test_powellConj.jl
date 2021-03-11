@@ -25,7 +25,7 @@ end
 
 @testset "Converge to Approx. True Min from Origin" begin
     @test begin
-        result, _ = powellsConjugateGradientMethod(_Rosenbrock5D, [0.0, 0.0, 0.0, 0.0, 0.0], 
+        result, _ = A2Module.powellsConjugateGradientMethod(_Rosenbrock5D, [0.0, 0.0, 0.0, 0.0, 0.0], 
         1e-4; max_iter = 10000, linesearch_tol=1e-3)
         isapprox(result, [1., 1., 1., 1., 1.]; atol=1e-3)
     end

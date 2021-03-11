@@ -25,7 +25,7 @@ end
 
 @testset "NM Converge to Approx. True Min from Origin" begin
     @test begin
-        result, _, _ = originalNewtonsMethod(_GradRosenbrock5D, _HessianRosenbrock5D,
+        result, _, _ = A2Module.originalNewtonsMethod(_GradRosenbrock5D, _HessianRosenbrock5D,
             [0.0, 0.0, 0.0, 0.0, 0.0]; g_tol = 1e-4, max_iter = 1000)
         isapprox(result, [1., 1., 1., 1., 1.]; atol=1e-3)
     end
