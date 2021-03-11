@@ -158,6 +158,20 @@ function onerunHookeJeeves(x_0::Array{Float64})
     return data_dict, best_result, history
 end
 
+function onerunNelderMead(x_0::Array{T}) where T <: AbstractFloat
+    initial_sidelength = 1.0;
+    max_iter = 500;
+    stuck_max = 10; 
+    stuck_coef = 0.5;
+    global N_f_evals = 0;
+    best_result, history = nelderMeadSimplexSearch(Rosenbrock5D, x_0, initial_sidelength; 
+        max_iter = max_iter, stuck_max = stuck_max, stuck_coef = stuck_coef)
+    final_loss = Rosenbrock5D(best_result)
+
+    data_dict = makeDataDict(x_0, best_result, final_loss; N_f_evals = N_f_evals)
+    return data_dict, best_result, history
+end
+
 function onerunOriginalNewtonsMethod(x_0::Array{T}) where T <: Real
     g_tol = 1e-3
     max_iter = 1000
@@ -350,6 +364,29 @@ function evaluateHookeJeeves()
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations - Hooke-Jeeves")
     savefig(plot_losses, "assets/HookeJeevesLossPlot.svg")
+end
+
+function evaluateNelderMead()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunNelderMead(x_0)
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/NelderMead_TrialOutputs.yml", all_trial_dicts)
+
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_best)
+    plot!(plot_losses, legend=:bottomleft)
+    xlabel!(plot_losses, "Number of Iterations")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations\nNelder-Mead Simplex Search")
+    savefig(plot_losses, "assets/NelderMead_LossPlot.svg")
 end
 
 function evaluateOriginalNewtonsMethod()

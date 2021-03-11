@@ -14,6 +14,7 @@ using ValueHistories #External Package for keeping track of values
 export conjugateGradient
 export secantLineSearch
 export powellsConjugateGradientMethod
+export nelderMeadSimplexSearch
 export originalNewtonsMethod
 export modifiedNewtonsWithLMMethod
 
@@ -252,8 +253,94 @@ end
 
 # https://c.mql5.com/31/43/garch-improved-nelder-mead-mt4-screen-9584.png
 function nelderMeadSimplexSearch(f::Function, x_0::Array{T}, 
-    initial_sidelength::T) where T <: Real
-    error("Undefined feature.")
+    initial_sidelength::T; max_iter::Integer = 1000, stuck_max::Integer = 10,
+    stuck_coef::T = 0.5) where T <: AbstractFloat
+    info(LOGGER, "Entering Nelder Mead")
+    current_vertices = generateSimplex(x_0, initial_sidelength)
+    @assert length(current_vertices) == (length(x_0) + 1)
+
+    k_current = 0;
+
+    x_l_old = x_0;
+    stuck_counter = 0;
+
+    current_sidelength = initial_sidelength
+
+    history = MVHistory()
+    push!(history, :x_best, 0, x_0)
+
+    ALPHA = 1;
+    BETA = 0.5;
+    GAMMA = 2;
+    while k_current < max_iter
+        k_current += 1
+        #Evaluate and sort into ascending order.
+        #current_vertices[1] will be the best (lowest) vertex
+        f_evals = map(f, current_vertices)
+        indices_for_sorting = sortperm(f_evals)
+        current_vertices = current_vertices[indices_for_sorting]
+        f_evals = f_evals[indices_for_sorting]
+
+        x_h = current_vertices[end] #Highest (to replace)
+        f_h = f_evals[end]
+
+        x_g = current_vertices[end-1] #Second Highest
+        f_g = f_evals[end-1]
+
+        x_l = current_vertices[1] #Lower
+        f_l = f_evals[1]
+
+        push!(history, :x_best, k_current, current_vertices[1])
+
+        if x_l_old == x_l
+            stuck_counter += 1
+        end
+
+        #Define centroid based on other vertices
+        x_c = zeros(length(x_0))
+        for (i, vertex) in enumerate(current_vertices)
+            if vertex != x_h
+                x_c += vertex
+            end
+        end
+        x_c /= length(x_0)
+
+        # Do a normal reflection
+        x_r = 2*x_c - x_h
+        f_r = f(x_r)
+
+        if stuck_counter < stuck_max
+            if f_l < f_r < f_g
+                theta = ALPHA;
+            elseif f_r < f_l
+                theta = GAMMA;
+            elseif f_r > f_h
+                theta = -1 * BETA;
+            else # f_g < f_r < f_h
+                theta = BETA;
+            end
+        else
+            info(LOGGER, "Shrinking in Nelder Mead")
+            stuck_counter = 0 #reset
+            for (index, x_old) in enumerate(current_vertices)
+                if index >= 2 #only modify the non-x_l vertices
+                    current_vertices[index] = (x_old - x_l)*stuck_coef + x_l
+                end
+            end
+
+            x_l_old = x_l;
+            continue #skip to next iteration
+        end
+
+        x_l_old = x_l;
+        x_new = x_h + (1+ theta)*(x_c - x_h)
+
+        # Replace the largest with x_new
+        current_vertices[end] = x_new
+    end
+
+    info(LOGGER, "Exiting in Nelder Mead")
+    return current_vertices[1], history
 end
 
 function generateSimplex(basePoint::Array{T}, side_length::T) where T <: AbstractFloat
