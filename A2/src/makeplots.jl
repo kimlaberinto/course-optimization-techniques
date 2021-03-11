@@ -177,6 +177,27 @@ function onerunOriginalNewtonsMethod(x_0::Array{T}) where T <: Real
     return data_dict, best_result, history
 end
 
+function onerunModifiedNewtonsMethodWithLM(x_0::Array{T}, mu_param::T) where T <: Real
+    linesearch_tol = 1e-3;
+    g_tol = 1e-3;
+    max_iter = 1000;
+
+    global N_f_evals = 0
+    global N_grad_evals = 0
+    global N_hessian_evals = 0
+    best_result, history, num_linsys_solves = modifiedNewtonsWithLMMethod(GradRosenbrock5D,
+        HessianRosenbrock5D, x_0, linesearch_tol = linesearch_tol, 
+        mu_param = mu_param, g_tol = g_tol, max_iter = max_iter)
+    final_loss = Rosenbrock5D(best_result)
+
+    data_dict = makeDataDict(x_0, best_result, final_loss; 
+        N_f_evals = N_f_evals,
+        N_grad_evals = N_grad_evals,
+        N_hessian_evals = N_hessian_evals,
+        N_linsys_solves = num_linsys_solves)
+
+    return data_dict, best_result, history
+end
 
 function evaluateGradientDescent()
     array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
@@ -368,5 +389,93 @@ function evaluateOriginalNewtonsMethod()
         ylabel!(plot_condnum_matrices, "Condition Number of Hessian")
         title!(plot_condnum_matrices, "Hessian Condition Number (log scale) vs Iterations\nOriginal Newtons Method")
         savefig(plot_condnum_matrices, "assets/OriginalNewtonsMethod_ConditionNumberHessianPlot.svg")
+    end
+end
+
+function evaluateModifiedNewtonsWithLM()
+    array_mu_params = [0.0, 1.0, 10.0]
+    for (mu_index, mu_param) in enumerate(array_mu_params)
+        array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+        array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+        array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+
+        for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+            data_dict, best_result, history = onerunModifiedNewtonsMethodWithLM(x_0, mu_param)
+
+            merge!(data_dict, OrderedDict("mu_param"=>mu_param))
+            array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+            array_of_histories[i] = history
+        end
+
+        all_trial_dicts = merge(array_of_trials_dicts...)
+        YAML.write_file("assets/ModifiedNewtons/ModifiedNewtonsWithLM_TrialOutputs_$mu_index.yml", all_trial_dicts)
+
+        plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_current)
+        plot!(legend=:bottomleft)
+        xlabel!(plot_losses, "Number of Iterations")
+        ylabel!(plot_losses, "Loss")
+        title!(plot_losses, "Loss vs Iterations\nModified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param)")
+        savefig(plot_losses, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_$mu_index.svg")
+
+        begin
+            plot_condnum_matrices = plot()
+            for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
+                is, matrices = get(historyofhistories, :LM_matrix)
+                condnums = []
+                for (i, M) in zip(is, matrices)
+                    condnum = cond(M)
+                    push!(condnums, condnum)
+                end
+                plot!(plot_condnum_matrices, is, condnums, label=label,
+                    yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:bottomright)
+            end
+            xlabel!(plot_condnum_matrices, "Number of Iterations")
+            ylabel!(plot_condnum_matrices, "Condition Number of Matrix")
+            title!(plot_condnum_matrices, "Matrix Condition Number (log scale) vs Iterations\nModified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param)")
+            savefig(plot_condnum_matrices, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_$mu_index.svg")
+        end
+
+        begin
+            begin
+                plot_condnum_matrices_with_mu = plot()
+                for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
+                    is, matrices = get(historyofhistories, :LM_matrix)
+                    condnums = []
+                    for (i, M) in zip(is, matrices)
+                        condnum = cond(M)
+                        push!(condnums, condnum)
+                    end
+                    plot!(plot_condnum_matrices_with_mu, is, condnums, label=label,
+                        yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:topright)
+                end
+                xlabel!(plot_condnum_matrices_with_mu, "Number of Iterations")
+                ylabel!(plot_condnum_matrices_with_mu, "Condition Number of LM Matrix")
+                title!(plot_condnum_matrices_with_mu, "LM Matrix Condition Number vs Iterations")
+            end
+
+            begin
+                plot_condnum_matrices_hessian = plot()
+                for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
+                    is, matrices = get(historyofhistories, :hessian_current)
+                    condnums = []
+                    for (i, M) in zip(is, matrices)
+                        condnum = cond(M)
+                        push!(condnums, condnum)
+                    end
+                    plot!(plot_condnum_matrices_hessian, is, condnums, label=label,
+                        yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:bottomright)
+                end
+                xlabel!(plot_condnum_matrices_hessian, "Number of Iterations")
+                ylabel!(plot_condnum_matrices_hessian, "Condition Number of Pure Hessian")
+                title!(plot_condnum_matrices_hessian, "Hessian Condition Number (no mu diagonal) vs Iterations")
+            end
+
+            layout_combined = @layout [a; b]
+            plot_combined = plot(plot_condnum_matrices_hessian, plot_condnum_matrices_with_mu, layout = layout_combined)
+            title!(plot_combined, "Modified Newtons Method with Levenberg-Marquardt\n(mu=$mu_param")
+            savefig(plot_combined, "assets/ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_$mu_index.svg")
+        end
+
     end
 end

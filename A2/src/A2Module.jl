@@ -5,7 +5,7 @@ include("A1Module.jl") # Module written by me, Kim Laberinto
 using .A1Module: SwannsBracketingMethod, GoldenSectionSearch
 
 # Other Imports
-using LinearAlgebra #External module for taking norm
+using LinearAlgebra #External module for taking norm, condition number, and identity
 using Memento #Invenia Module for logging
 using Printf #External module for formatting strings
 using ValueHistories #External Package for keeping track of values
@@ -15,6 +15,7 @@ export conjugateGradient
 export secantLineSearch
 export powellsConjugateGradientMethod
 export originalNewtonsMethod
+export modifiedNewtonsWithLMMethod
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -209,5 +210,45 @@ function originalNewtonsMethod(grad_f::Function, hessian_f::Function,
     info(LOGGER, "Exiting Original Newtons Method")
     return x_current, history, num_linsys_solves
 end
+
+function modifiedNewtonsWithLMMethod(grad_f::Function, hessian_f::Function,
+    x_0::Array{T}; linesearch_tol::T = 1e-3, mu_param::T = 1.0, g_tol::T = 1e-3, 
+    max_iter::Integer = 1000) where T <: Real
+    info(LOGGER, "Entering Modified Newtons Method with LM")
+
+    k_current = 0;
+    num_linsys_solves = 0;
+
+    x_current = x_0;
+
+    g_current = grad_f(x_current);
+
+    history = MVHistory()
+    push!(history, :x_current, 0, x_current)
+    push!(history, :g_current, 0, g_current)
+
+    while norm(g_current) > g_tol && k_current < max_iter
+        k_current += 1
+
+        num_linsys_solves += 1
+        hessian_current = hessian_f(x_current)
+        LM_matrix = (hessian_current + I*mu_param)
+        g_current = grad_f(x_current)
+        d = LM_matrix \ (-g_current)
+        
+        #Do a line search to do the update
+        x_current = secantLineSearch(grad_f, x_current, d, linesearch_tol)
+
+        push!(history, :x_current, k_current, x_current)
+        push!(history, :g_current, k_current, g_current)
+        push!(history, :hessian_current, k_current, hessian_current)
+        push!(history, :LM_matrix, k_current, LM_matrix)
+    end
+
+    info(LOGGER, "Exiting Modified Newtons Method with LM")
+    return x_current, history, num_linsys_solves
+
+end
+
 
 end

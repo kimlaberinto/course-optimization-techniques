@@ -1,0 +1,95 @@
+Initial Vector 1:
+  initial_vector:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  final_vector:
+    - 0.9999924139956583
+    - 0.9999845403078829
+    - 0.9999697849884688
+    - 0.9999382665831402
+    - 0.9998770942349102
+  final_loss: 5.279546348627302e-9
+  N_f_evals: 1
+  N_grad_evals: 462
+  N_hessian_evals: 95
+  N_linsys_solves: 95
+  mu_param: 10.0
+Initial Vector 2:
+  initial_vector:
+    - 0.36
+    - 1.18
+    - -1.01
+    - -1.73
+    - -0.9
+  final_vector:
+    - 0.9999903962029495
+    - 0.9999804611958842
+    - 0.9999618998479324
+    - 0.9999217705576142
+    - 0.9998446594873824
+  final_loss: 8.687948626314385e-9
+  N_f_evals: 1
+  N_grad_evals: 510
+  N_hessian_evals: 90
+  N_linsys_solves: 90
+  mu_param: 10.0
+Initial Vector 3:
+  initial_vector:
+    - 1.07
+    - 1.42
+    - 0.32
+    - 1.83
+    - 0.61
+  final_vector:
+    - 0.9999909654985678
+    - 0.9999819423999617
+    - 0.9999643336236267
+    - 0.9999267655003555
+    - 0.999855014955632
+  final_loss: 7.643980753607585e-9
+  N_f_evals: 1
+  N_grad_evals: 437
+  N_hessian_evals: 86
+  N_linsys_solves: 86
+  mu_param: 10.0
+Initial Vector 4:
+  initial_vector:
+    - 0.26
+    - -1.2
+    - 0.6
+    - 0.59
+    - -1.77
+  final_vector:
+    - 0.9999922208604007
+    - 0.9999840706832198
+    - 0.9999689115025459
+    - 0.9999365668594047
+    - 0.9998735803916589
+  final_loss: 5.5551863358476674e-9
+  N_f_evals: 1
+  N_grad_evals: 492
+  N_hessian_evals: 99
+  N_linsys_solves: 99
+  mu_param: 10.0
+Initial Vector 5:
+  initial_vector:
+    - -0.16
+    - -0.81
+    - -1.96
+    - -1.55
+    - 1.37
+  final_vector:
+    - 0.9999921377796949
+    - 0.9999845637010915
+    - 0.9999693921302717
+    - 0.9999373880243441
+    - 0.9998756066699493
+  final_loss: 5.436042210329557e-9
+  N_f_evals: 1
+  N_grad_evals: 481
+  N_hessian_evals: 96
+  N_linsys_solves: 96
+  mu_param: 10.0
