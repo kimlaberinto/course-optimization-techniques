@@ -14,6 +14,7 @@ using ValueHistories #External Package for keeping track of values
 export conjugateGradient
 export secantLineSearch
 export powellsConjugateGradientMethod
+export originalNewtonsMethod
 
 # Set up Memento Logger
 const LOGGER = getlogger(@__MODULE__)
@@ -174,6 +175,39 @@ function conjugateGradient(f::Function, grad_f::Function, x_0::Array,
 
     info(LOGGER, "Exiting Conjugate Gradient ($method)")
     return x_current, history
+end
+
+function originalNewtonsMethod(grad_f::Function, hessian_f::Function, 
+        x_0::Array{T}; g_tol::T = 1e-3, max_iter::Integer = 1000) where T <: Real
+    info(LOGGER, "Entering Original Newtons Method")
+
+    k_current = 0;
+    num_linsys_solves = 0;
+
+    x_current = x_0;
+
+    g_current = grad_f(x_current);
+
+    history = MVHistory()
+    push!(history, :x_current, 0, x_current)
+    push!(history, :g_current, 0, g_current)
+
+    while norm(g_current) > g_tol && k_current < max_iter
+        k_current += 1
+
+        num_linsys_solves += 1
+        hessian_current = hessian_f(x_current)
+        g_current = grad_f(x_current)
+        d = hessian_current \ (-g_current)
+        x_current += d
+
+        push!(history, :x_current, k_current, x_current)
+        push!(history, :g_current, k_current, g_current)
+        push!(history, :hessian_current, k_current, hessian_current)
+    end
+
+    info(LOGGER, "Exiting Original Newtons Method")
+    return x_current, history, num_linsys_solves
 end
 
 end
