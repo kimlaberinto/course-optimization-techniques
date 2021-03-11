@@ -1,0 +1,126 @@
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ConjugateGradientFletcherReeves_LossPlot.svg}
+    \caption{ConjugateGradientFletcherReeves_LossPlot.svg}
+    \label{fig:ConjugateGradientFletcherReeves_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ConjugateGradientHestenesStiefel_LossPlot.svg}
+    \caption{ConjugateGradientHestenesStiefel_LossPlot.svg}
+    \label{fig:ConjugateGradientHestenesStiefel_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ConjugateGradientPolakRibiere_LossPlot.svg}
+    \caption{ConjugateGradientPolakRibiere_LossPlot.svg}
+    \label{fig:ConjugateGradientPolakRibiere_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{GradientDescentLossPlot.svg}
+    \caption{GradientDescentLossPlot.svg}
+    \label{fig:GradientDescentLossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{HookeJeevesLossPlot.svg}
+    \caption{HookeJeevesLossPlot.svg}
+    \label{fig:HookeJeevesLossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{NelderMead_LossPlot.svg}
+    \caption{NelderMead_LossPlot.svg}
+    \label{fig:NelderMead_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+    \caption{OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+    \label{fig:OriginalNewtonsMethod_ConditionNumberHessianPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{OriginalNewtonsMethod_LossPlot.svg}
+    \caption{OriginalNewtonsMethod_LossPlot.svg}
+    \label{fig:OriginalNewtonsMethod_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{PowellConjugateGradient_LossPlot.svg}
+    \caption{PowellConjugateGradient_LossPlot.svg}
+    \label{fig:PowellConjugateGradient_LossPlot.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+    \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+    \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+    \caption{ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_1.svg}
+    \caption{ModifiedNewtonsWithLM_LossPlot_1.svg}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_1.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_2.svg}
+    \caption{ModifiedNewtonsWithLM_LossPlot_2.svg}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_2.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_LossPlot_3.svg}
+    \caption{ModifiedNewtonsWithLM_LossPlot_3.svg}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_3.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+    \caption{ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_1.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+    \caption{ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_2.svg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.5\linewidth]{ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+    \caption{ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_3.svg}
+\end{figure}
