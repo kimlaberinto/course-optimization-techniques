@@ -1,0 +1,99 @@
+ConjugateGradientFletcherReeves_TrialOutputs.yml
+final_vector = [0.9999999997600455, 0.9999999993829165, 0.9999999987400482, 0.9999999976949876, 0.9999999956528196]
+final_loss = 2.0813642819443982e-17
+N_f_evals = 1
+N_grad_evals = 2047
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+ConjugateGradientHestenesStiefel_TrialOutputs.yml
+final_vector = [0.9999901329683291, 0.999980204164805, 0.9999603559505029, 0.9999204779748139, 0.9998405906054003]
+final_loss = 8.404657445002592e-9
+N_f_evals = 1
+N_grad_evals = 30991
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+ConjugateGradientPolakRibiere_TrialOutputs.yml
+final_vector = [0.9999960119474102, 0.9999919496073277, 0.999983957522106, 0.9999677402078572, 0.9999353799797033]
+final_loss = 1.3837555248382568e-9
+N_f_evals = 1
+N_grad_evals = 34976
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+GradientDescent_TrialOutputs.yml
+final_vector = [0.9999906887427871, 0.9999813099000597, 0.9999625853419439, 0.9999249347967124, 0.9998495336768893]
+final_loss = 7.488536081746655e-9
+N_f_evals = 330625
+N_grad_evals = 11809
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+HookeJeeves_TrialOutputs.yml
+final_vector = [1.0000000000000004, 0.9999999999999989, 1.0010000000000008, 1.0019999999999998, 1.0040000000000004]
+final_loss = 0.00010500170000059992
+N_f_evals = 1176
+N_grad_evals = 0
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+NelderMead_TrialOutputs.yml
+final_vector = [1.0011026047810128, 1.0031130617007538, 1.0072995448170226, 1.0149311240690038, 1.0301840205902764]
+final_loss = 0.0004912269066695823
+N_f_evals = 3501
+N_grad_evals = 0
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+OriginalNewtonsMethod_TrialOutputs.yml
+final_vector = [0.999999999994283, 0.9999999999879989, 0.9999999999737627, 0.9999999999386642, 0.9999999998418942]
+final_loss = 1.3856848364122592e-19
+N_f_evals = 1
+N_grad_evals = 11
+N_hessian_evals = 10
+N_linsys_solves = 10
+
+
+PowellConjugateGradient_TrialOutputs.yml
+final_vector = [1.0000000000388525, 1.000000000042043, 1.000000000087915, 1.0000000001925982, 1.0000000003917993]
+final_loss = 2.0922048846296821e-19
+N_f_evals = 5111
+N_grad_evals = 0
+N_hessian_evals = 0
+N_linsys_solves = 0
+
+
+ModifiedNewtonsWithLM_TrialOutputs_1.yml
+final_vector = [1.000000000113733, 1.0000000002230613, 1.000000000432856, 1.0000000008101857, 1.0000000013711687]
+final_loss = 7.444510394796686e-18
+N_f_evals = 1
+N_grad_evals = 97
+N_hessian_evals = 13
+N_linsys_solves = 13
+
+
+ModifiedNewtonsWithLM_TrialOutputs_2.yml
+final_vector = [0.999998886461424, 0.9999978848810501, 0.9999956774086738, 0.9999919207539502, 0.9999837394099236]
+final_loss = 1.2484918509812857e-10
+N_f_evals = 1
+N_grad_evals = 141
+N_hessian_evals = 23
+N_linsys_solves = 23
+
+
+ModifiedNewtonsWithLM_TrialOutputs_3.yml
+final_vector = [0.9999924139956583, 0.9999845403078829, 0.9999697849884688, 0.9999382665831402, 0.9998770942349102]
+final_loss = 5.279546348627302e-9
+N_f_evals = 1
+N_grad_evals = 462
+N_hessian_evals = 95
+N_linsys_solves = 95
+
+

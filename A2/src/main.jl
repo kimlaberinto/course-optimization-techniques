@@ -26,3 +26,6 @@ println("\nOriginal Newtons Method")
 
 println("\nModified Newtons Method with Levenberg Marquardt")
 @time evaluateModifiedNewtonsWithLM()
+
+println("\nEvaluating Times (BenchmarkTools)")
+evaluateTimes()

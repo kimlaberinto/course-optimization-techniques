@@ -43,7 +43,7 @@ function analyticGradientNDRosenbrock(N::Integer, x::Array{T}) where T <: Real
 end
 
 function analyticHessianNDRosenbrock(N::Integer, x::Array{T}) where T <: Real
-    error("Currently undefined")
+    error("Currently undefined. Please use autodiffHessianNDRosenbrock.")
 end
 
 function autodiffGradientNDRosenbrock(N::Integer, x::Array{T}) where T <: Real

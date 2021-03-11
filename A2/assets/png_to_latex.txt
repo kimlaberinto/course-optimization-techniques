@@ -1,0 +1,126 @@
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ConjugateGradientFletcherReeves_LossPlot.png}
+    \caption{ConjugateGradientFletcherReeves\_LossPlot.png}
+    \label{fig:ConjugateGradientFletcherReeves_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ConjugateGradientHestenesStiefel_LossPlot.png}
+    \caption{ConjugateGradientHestenesStiefel\_LossPlot.png}
+    \label{fig:ConjugateGradientHestenesStiefel_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ConjugateGradientPolakRibiere_LossPlot.png}
+    \caption{ConjugateGradientPolakRibiere\_LossPlot.png}
+    \label{fig:ConjugateGradientPolakRibiere_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./GradientDescentLossPlot.png}
+    \caption{GradientDescentLossPlot.png}
+    \label{fig:GradientDescentLossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./HookeJeevesLossPlot.png}
+    \caption{HookeJeevesLossPlot.png}
+    \label{fig:HookeJeevesLossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./NelderMead_LossPlot.png}
+    \caption{NelderMead\_LossPlot.png}
+    \label{fig:NelderMead_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./OriginalNewtonsMethod_ConditionNumberHessianPlot.png}
+    \caption{OriginalNewtonsMethod\_ConditionNumberHessianPlot.png}
+    \label{fig:OriginalNewtonsMethod_ConditionNumberHessianPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./OriginalNewtonsMethod_LossPlot.png}
+    \caption{OriginalNewtonsMethod\_LossPlot.png}
+    \label{fig:OriginalNewtonsMethod_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./PowellConjugateGradient_LossPlot.png}
+    \caption{PowellConjugateGradient\_LossPlot.png}
+    \label{fig:PowellConjugateGradient_LossPlot.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.png}
+    \caption{ModifiedNewtonsWithLM\_ConditionNumberHessianPlot\_1.png}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_1.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.png}
+    \caption{ModifiedNewtonsWithLM\_ConditionNumberHessianPlot\_2.png}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_2.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.png}
+    \caption{ModifiedNewtonsWithLM\_ConditionNumberHessianPlot\_3.png}
+    \label{fig:ModifiedNewtonsWithLM_ConditionNumberHessianPlot_3.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_1.png}
+    \caption{ModifiedNewtonsWithLM\_LossPlot\_1.png}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_1.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_2.png}
+    \caption{ModifiedNewtonsWithLM\_LossPlot\_2.png}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_2.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_LossPlot_3.png}
+    \caption{ModifiedNewtonsWithLM\_LossPlot\_3.png}
+    \label{fig:ModifiedNewtonsWithLM_LossPlot_3.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_1.png}
+    \caption{ModifiedNewtonsWithLM\_MatrixCompare\_1.png}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_1.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_2.png}
+    \caption{ModifiedNewtonsWithLM\_MatrixCompare\_2.png}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_2.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./ModifiedNewtons/ModifiedNewtonsWithLM_MatrixCompare_3.png}
+    \caption{ModifiedNewtonsWithLM\_MatrixCompare\_3.png}
+    \label{fig:ModifiedNewtonsWithLM_MatrixCompare_3.png}
+\end{figure}

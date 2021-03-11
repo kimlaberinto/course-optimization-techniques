@@ -9,6 +9,7 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
     autodiffHessianNDRosenbrock
 
 # Useful external modules
+using BenchmarkTools
 using LinearAlgebra: cond
 using Memento
 using OrderedCollections
@@ -514,4 +515,53 @@ function evaluateModifiedNewtonsWithLM()
         end
 
     end
+end
+
+function evaluateTimes()
+    setlevel!(getlogger(A2Module), "not_set")
+    
+    x_0 = array_of_inits[1]
+    println("\n\nSteepest Descent")
+    b = @benchmark onerunGradientDescent($x_0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nPowell Conjugate Direction")
+    b = @benchmark onerunPowellConjugateGradient($x_0)
+    show(stdout, MIME("text/plain"), b)
+    
+    println("\n\nCG- Fletcher Reeves")
+    b = @benchmark onerunConjugateGradient($x_0, "FletcherReeves")
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nCG- HestenesStiefel")
+    b = @benchmark onerunConjugateGradient($x_0, "HestenesStiefel")
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nCG- PolakRibiere")
+    b = @benchmark onerunConjugateGradient($x_0, "PolakRibiere")
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nHooke Jeeves")
+    b = @benchmark onerunHookeJeeves($x_0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nNelder Mead")
+    b = @benchmark onerunNelderMead($x_0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nOriginal Newtons Method")
+    b = @benchmark onerunOriginalNewtonsMethod($x_0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nModified Newton (LM) mu = 0.0")
+    b = @benchmark onerunModifiedNewtonsMethodWithLM($x_0, 0.0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nModified Newton (LM) mu = 1.0")
+    b = @benchmark onerunModifiedNewtonsMethodWithLM($x_0, 1.0)
+    show(stdout, MIME("text/plain"), b)
+
+    println("\n\nModified Newton (LM) mu = 10.0")
+    b = @benchmark onerunModifiedNewtonsMethodWithLM($x_0, 10.0)
+    show(stdout, MIME("text/plain"), b)
 end
