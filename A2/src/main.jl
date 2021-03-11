@@ -17,3 +17,6 @@ println("\nConjugate Gradient (Hestenes-Stiefel)")
 
 println("\nConjugate Gradient (Polak-Ribiere)")
 @time evaluateConjugateGradientPolakRibiere()
+
+println("\nOriginal Newtons Method")
+@time evaluateOriginalNewtonsMethod()

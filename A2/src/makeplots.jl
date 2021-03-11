@@ -9,6 +9,7 @@ using .objectivefunctionModule: NDRosenbrock, autodiffGradientNDRosenbrock,
     autodiffHessianNDRosenbrock
 
 # Useful external modules
+using LinearAlgebra: cond
 using Memento
 using OrderedCollections
 using Plots
@@ -33,7 +34,6 @@ const array_of_inits = [[ 0.00,  0.00,  0.00,  0.00,  0.00],
 global N_f_evals = 0
 global N_grad_evals = 0
 global N_hessian_evals = 0
-global N_linearsystemsolves = 0 #TODO
 
 function Rosenbrock5D(x::Array{T}) where T <: Real
     global N_f_evals += 1
@@ -75,7 +75,7 @@ function generatePlot_LossVsIterations(array_of_histories::Array{MVHistory{Histo
 end
 
 function makeDataDict(initial_vector, final_vector, final_loss; 
-        N_f_evals = 0, N_grad_evals = 0, N_hessian_evals = 0)
+        N_f_evals = 0, N_grad_evals = 0, N_hessian_evals = 0, N_linsys_solves = 0)
 
     return OrderedDict(
         "initial_vector" => initial_vector,
@@ -83,7 +83,8 @@ function makeDataDict(initial_vector, final_vector, final_loss;
         "final_loss" => final_loss,
         "N_f_evals" => N_f_evals,
         "N_grad_evals" => N_grad_evals,
-        "N_hessian_evals" => N_hessian_evals
+        "N_hessian_evals" => N_hessian_evals,
+        "N_linsys_solves" => N_linsys_solves
     )
 
 end
@@ -157,6 +158,24 @@ function onerunHookeJeeves(x_0::Array{Float64})
     return data_dict, best_result, history
 end
 
+function onerunOriginalNewtonsMethod(x_0::Array{T}) where T <: Real
+    g_tol = 1e-3
+    max_iter = 1000
+    global N_f_evals = 0
+    global N_grad_evals = 0
+    global N_hessian_evals = 0
+    best_result, history, num_linsys_solves = originalNewtonsMethod(GradRosenbrock5D, 
+        HessianRosenbrock5D, x_0; g_tol = g_tol, max_iter = max_iter)
+    final_loss = Rosenbrock5D(best_result)
+
+    data_dict = makeDataDict(x_0, best_result, final_loss; 
+        N_f_evals = N_f_evals,
+        N_grad_evals = N_grad_evals,
+        N_hessian_evals = N_hessian_evals,
+        N_linsys_solves = num_linsys_solves)
+
+    return data_dict, best_result, history
+end
 
 
 function evaluateGradientDescent()
@@ -310,4 +329,44 @@ function evaluateHookeJeeves()
     ylabel!(plot_losses, "Loss")
     title!(plot_losses, "Loss vs Iterations - Hooke-Jeeves")
     savefig(plot_losses, "assets/HookeJeevesLossPlot.svg")
+end
+
+function evaluateOriginalNewtonsMethod()
+    array_of_labels = ["Initial Vector $i" for i in 1:length(array_of_inits)];
+    array_of_trials_dicts = Array{OrderedDict}(undef, length(array_of_inits));
+    array_of_histories = Array{MVHistory{History}}(undef, length(array_of_inits));
+
+    for (i, (label, x_0)) in enumerate(zip(array_of_labels, array_of_inits))
+        data_dict, best_result, history = onerunOriginalNewtonsMethod(x_0)
+
+        array_of_trials_dicts[i] = OrderedDict(label => data_dict)
+        array_of_histories[i] = history
+    end
+
+    all_trial_dicts = merge(array_of_trials_dicts...)
+    YAML.write_file("assets/OriginalNewtonsMethod_TrialOutputs.yml", all_trial_dicts)
+
+    plot_losses = generatePlot_LossVsIterations(array_of_histories, array_of_labels, :x_current)
+    xlabel!(plot_losses, "Number of Iterations")
+    ylabel!(plot_losses, "Loss")
+    title!(plot_losses, "Loss vs Iterations\nOriginal Newtons Method")
+    savefig(plot_losses, "assets/OriginalNewtonsMethod_LossPlot.svg")
+
+    begin
+        plot_condnum_matrices = plot()
+        for (label, historyofhistories) in zip(array_of_labels, array_of_histories)
+            is, matrices = get(historyofhistories, :hessian_current)
+            condnums = []
+            for (i, M) in zip(is, matrices)
+                condnum = cond(M)
+                push!(condnums, condnum)
+            end
+            plot!(plot_condnum_matrices, is, condnums, label=label,
+                yscale=:log10, lw=3, shape = :circle, markersize=3, legend=:bottomright)
+        end
+        xlabel!(plot_condnum_matrices, "Number of Iterations")
+        ylabel!(plot_condnum_matrices, "Condition Number of Hessian")
+        title!(plot_condnum_matrices, "Hessian Condition Number (log scale) vs Iterations\nOriginal Newtons Method")
+        savefig(plot_condnum_matrices, "assets/OriginalNewtonsMethod_ConditionNumberHessianPlot.svg")
+    end
 end
