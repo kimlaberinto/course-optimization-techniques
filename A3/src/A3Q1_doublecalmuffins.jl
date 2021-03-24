@@ -146,7 +146,7 @@ let
             fibre[i]*x_value_rounded[i]])
     end
 
-    diet_row = ["Diet" "" "" sum(proteins[i]*x_value_rounded[i] for i in 1:num_food) sum(carbs[i]*x_value_rounded[i] for i in 1:num_food) sum(fat[i]*x_value_rounded[i] for i in 1:num_food) sum(vitA[i]*x_value_rounded[i] for i in 1:num_food)  sum(vitB1[i]*x_value_rounded[i] for i in 1:num_food) sum(vitB2[i]*x_value_rounded[i] for i in 1:num_food) sum(vitC[i]*x_value_rounded[i] for i in 1:num_food) sum(fibre[i]*x_value_rounded[i] for i in 1:num_food)]
+    diet_row = ["Diet" "" obj_value sum(proteins[i]*x_value_rounded[i] for i in 1:num_food) sum(carbs[i]*x_value_rounded[i] for i in 1:num_food) sum(fat[i]*x_value_rounded[i] for i in 1:num_food) sum(vitA[i]*x_value_rounded[i] for i in 1:num_food)  sum(vitB1[i]*x_value_rounded[i] for i in 1:num_food) sum(vitB2[i]*x_value_rounded[i] for i in 1:num_food) sum(vitC[i]*x_value_rounded[i] for i in 1:num_food) sum(fibre[i]*x_value_rounded[i] for i in 1:num_food)]
 
     required_row = ["Daily Requirement" "" "" protein_req carb_req fat_req vitA_req vitB1_req vitB2_req vitC_req fibre_req]
 
