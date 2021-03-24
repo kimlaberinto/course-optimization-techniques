@@ -81,6 +81,39 @@
 
     \subsubsection{Constraints}
 
+    In this linear program, the constraints are to meet all the daily nutriential values. There are also constraints to ensure that serving portions are non-negative.
+
+    Let the following functions denote the nutritional content of 1 serving of the food $x_i$
+
+    \begin{itemize}
+        \item $\text{Protein}(x_i)$ - protein in grams 
+        \item $\text{Carb}(x_i)$ - carbohydrates in grams 
+        \item $\text{Fat}(x_i)$ - fat in grams
+        \item $\text{VitA}(x_i)$ - Vitamin A in REs 
+        \item $\text{VitB1}(x_i)$ - Vitamin B1 Thiamin in milligrams 
+        \item $\text{VitB2}(x_i)$ - Vitamin B2 Riboflavin in milligrams 
+        \item $\text{VitC}(x_i)$ - Vitamin C in milligrams 
+        \item $\text{Fibre}(x_i)$ - Fibre in grams 
+    \end{itemize}
+
+    Then the linear program can be summarized as the following.
+
+    \begin{equation}
+        \begin{aligned}
+            & \underset{\mathbf{x}}{\text{minimize}} & & \sum_{i} E(x_i) x_i \\
+            & \text{subject to} & & x_i \ge 0, \; i = 1, \ldots, 11 \\
+            & & & \sum_{i} \text{Protein}(x_i) x_i \ge 60 \\
+            & & & \sum_{i} \text{Carb}(x_i) x_i \ge 300 \\
+            & & & \sum_{i} \text{Fat}(x_i) x_i \ge 40 \\
+            & & & \sum_{i} \text{VitA}(x_i) x_i \ge 800 \\
+            & & & \sum_{i} \text{VitB1}(x_i) x_i \ge 1.0 \\
+            & & & \sum_{i} \text{VitB2}(x_i) x_i \ge 1.2 \\
+            & & & \sum_{i} \text{VitC}(x_i) x_i \ge 60 \\
+            & & & \sum_{i} \text{Fibre}(x_i) x_i \ge 10 \\
+        \end{aligned}
+    \end{equation}
+    
+
     \subsection{Solution using Julia}
 
     The linear program was solved using JuMP.jl from the Julia ecosystem, yielding the following solution.
