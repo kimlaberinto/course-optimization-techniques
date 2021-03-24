@@ -69,6 +69,16 @@
 
     \subsubsection{Objective Function}
 
+    Let $E(x_i)$ denote the caloric (energy) content of 1 serving of food $x_i$ in units of kcal (equivalent to in units of food calories (i.e 1 kcal = 1 food calorie)).
+
+    The objective of this linear program is the following. Shown without any constraints.
+
+    \begin{equation}
+    \begin{aligned}
+        & \underset{\mathbf{x}}{\text{minimize}} & & \sum_{i} E(x_i) x_i \\
+    \end{aligned}
+    \end{equation}
+
     \subsubsection{Constraints}
 
     \subsection{Solution using Julia}
