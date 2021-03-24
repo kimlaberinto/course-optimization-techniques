@@ -142,6 +142,34 @@
         \label{tab:Q1_Julia_Solution}
     \end{table}
 
+    \begin{table}[H]
+        \centering
+        \resizebox{\textwidth}{!}{%
+        \begin{tabular}{@{}lrrrrrrrrrr@{}}
+        \toprule
+        &
+        Servings &
+        \begin{tabular}[c]{@{}r@{}}Energy\\ {[}kcal{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Protein\\ {[}g{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Carbs\\ {[}g{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Fat\\ {[}g{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Vitamin A\\ {[}RE{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Vitamin B1\\ {[}mg{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Vitamin B2\\ {[}mg{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Vitamin C\\ {[}mg{]}\end{tabular} &
+        \begin{tabular}[c]{@{}r@{}}Fibre\\ {[}g{]}\end{tabular} \\ \midrule
+        $x_6$ - Brussel Sprouts & 6.96 & 445.44 & 27.84 & 97.44 & 0.0 & 828.24 & 1.25 & 0.90 & 709.92 & 34.8 \\
+        $x_8$ - French Fries    & 0.0  & 0.0    & 0.0   & 0.0   & 0.0 & 0.0    & 0.0  & 0.0  & 0.0    & 0.0  \\
+        $x_9$ - Oranges         & 2.17 & 134.54 & 2.17  & 32.55 & 0.0 & 60.76  & 0.24 & 0.11 & 151.9  & 5.64 \\
+        $x_{11}$ - Bran Muffin  & 10.0 & 1040.0 & 30    & 170   & 40  & 180    & 0.5  & 0.8  & 0.0    & 18   \\ \midrule
+        Diet Summary            &      & 1620.0 & 60    & 300   & 40  & 1069   & 2.0  & 1.8  & 861.8  & 58.4 \\ \midrule
+        Daily Requirement       &      &        & 60    & 300   & 40  & 800    & 1.0  & 1.2  & 60     & 10   \\ \bottomrule
+        \end{tabular}%
+        }
+        \caption{Nutrition Summary of Optimized Diet using Julia showing all nutritional daily requirements are met. Rounded values for clarity.}
+        \label{tab:Q1_NutritionSummary_Solution_Julia}
+    \end{table}
+
     \subsection{Solution using Matlab}
 
     The linear program was solved using Matlab, yielding the following solution.
@@ -186,6 +214,33 @@
         \label{tab:Q1_doublecalmuffins_solution}
     \end{table}
 
+    \begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lrrrrrrrrrr@{}}
+    \toprule
+     &
+      Servings &
+      \begin{tabular}[c]{@{}r@{}}Energy\\ {[}kcal{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Protein\\ {[}g{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Carbs\\ {[}g{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Fat\\ {[}g{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Vitamin A\\ {[}RE{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Vitamin B1\\ {[}mg{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Vitamin B2\\ {[}mg{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Vitamin C\\ {[}mg{]}\end{tabular} &
+      \begin{tabular}[c]{@{}r@{}}Fibre\\ {[}g{]}\end{tabular} \\ \midrule
+    $x_6$ - Brussel Sprouts & 11.96 & 765.44 & 47.84 & 167.44 & 0.0  & 1423.24 & 2.1582 & 1.55 & 1219.92 & 59.80 \\
+    $x_8$ - French Fries    & 5     & 790    & 10.0  & 100.0  & 40.0 & 0       & 0.45   & 0.05 & 25.0    & 0     \\
+    $x_9$ - Oranges         & 2.17  & 134.54 & 2.17  & 32.55  & 0.0  & 60.76   & 0.24   & 0.11 & 151.9   & 5.64  \\
+    $x_{11}$ - Bran Muffin  & 0.0   & 0.0    & 0.0   & 0.0    & 0.0  & 0.0     & 0.0    & 0.0  & 0.0     & 0.0   \\ \midrule
+    Diet Summary            &       & 1690   & 60    & 300    & 40   & 1484    & 2.8    & 1.7  & 1396.8  & 65.4  \\ \midrule
+    Daily Requirement       &       &        & 60    & 300    & 40   & 800     & 1.0    & 1.2  & 60      & 10    \\ \bottomrule
+    \end{tabular}%
+    }
+    \caption{Nutritional Summary of Diet (double calorie muffins).}
+    \label{tab:Q1_doublecalmuffins_nutritionsummary}
+    \end{table}
 
     There are several observations to make from this new solution:
 
