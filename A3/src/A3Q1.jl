@@ -113,7 +113,7 @@ let
         sum(vitC[i]*x_value[i] for i in 1:num_food), 
         sum(fibre[i]*x_value[i] for i in 1:num_food))
 
-    pretty_table(table_data, header, title = "Optimized Diet Nutrition") #Show Table of Nutritional Constants
+    pretty_table(table_data, header, title = "Optimized Diet Nutrition")
 end
 
 let
@@ -121,7 +121,7 @@ let
 
     table_data = x_value'
 
-    pretty_table(table_data, header, title = "Optimized Diet Servings") #Show Table of Nutritional Constants
+    pretty_table(table_data, header, title = "Optimized Diet Servings")
 end
 
 let
