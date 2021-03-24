@@ -119,6 +119,28 @@
     The linear program was solved using JuMP.jl from the Julia ecosystem, yielding the following solution.
 
     % Solution
+    % Please add the following required packages to your document preamble:
+    % \usepackage{booktabs}
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{@{}llrr@{}}
+        \toprule
+        Variable & Food & Diet Serving Count & Diet Quantity \\ \midrule
+        $x_1$    & Provolone         & 0.0  & - \\
+        $x_2$    & Mozzarella        & 0.0  & - \\
+        $x_3$    & 2\% Milk          & 0.0  & - \\
+        $x_4$    & Salami            & 0.0  & - \\
+        $x_5$    & Ham               & 0.0  & - \\
+        $x_6$    & Brussel Sprouts   & 6.96 & 1740.0 mL \\
+        $x_7$    & Lettuce           & 0.0  & - \\
+        $x_8$    & French Fries      & 0.0  & - \\
+        $x_9$    & Orange            & 2.17 & 2.17 medium \\
+        $x_{10}$ & Whole Wheat Bread & 0.0  & - \\
+        $x_{11}$ & Bran Muffin       & 10.0 & 10.0 medium \\ \bottomrule
+        \end{tabular}
+        \caption{Optimized diet solution using Julia. Serving counts, and quantity shown.}
+        \label{tab:Q1_Julia_Solution}
+    \end{table}
 
     \subsection{Solution using Matlab}
 
@@ -142,6 +164,28 @@
     Using this new calorie content for the bran muffins yields the following solution.
 
     % Solution
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{@{}llrr@{}}
+        \toprule
+        Variable & Food & Diet Serving Count & Diet Quantity \\ \midrule
+        $x_1$    & Provolone         & 0.0  & - \\
+        $x_2$    & Mozzarella        & 0.0  & - \\
+        $x_3$    & 2\% Milk          & 0.0  & - \\
+        $x_4$    & Salami            & 0.0  & - \\
+        $x_5$    & Ham               & 0.0  & - \\
+        $x_6$    & Brussel Sprouts   & 11.96 & 2990 mL \\
+        $x_7$    & Lettuce           & 0.0  & - \\
+        $x_8$    & French Fries      & 5.0  & 50 strips \\
+        $x_9$    & Orange            & 2.17 & 2.17 medium \\
+        $x_{10}$ & Whole Wheat Bread & 0.0  & - \\
+        $x_{11}$ & Bran Muffin       & 0.0 & - \\ \bottomrule
+        \end{tabular}
+        \caption{Optimized diet solution, where bran muffins had 2x calories. Serving counts, and quantity shown. (Solution found using Julia). }
+        \label{tab:Q1_doublecalmuffins_solution}
+    \end{table}
+
 
     There are several observations to make from this new solution:
 
