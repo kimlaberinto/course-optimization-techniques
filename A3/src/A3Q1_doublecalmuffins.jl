@@ -125,3 +125,34 @@ let
     pretty_table(table_data, header, title = "Optimized Diet Servings (double cal muffins)") #Show Table of Nutritional Constants
 end
 
+let
+
+    header = ["" "Servings" "Energy" "Protein" "Carbs" "Fat" "Vitamin A" "Vitamin B1" "Vitamin B2" "Vitamin C" "Fibre";
+              "" ""         "[kcal]" "[g]"     "[g]"   "[g]" "[RE]"      "[mg]"       "[mg]"       "[mg]"      "[g]"];
+
+    x_value_rounded = round.(x_value; digits=2)
+    food_rows = []
+    for i in [6, 8, 9, 11]
+        push!(food_rows, [x[i], 
+            x_value_rounded[i], 
+            calories[i]*x_value_rounded[i], 
+            proteins[i]*x_value_rounded[i], 
+            carbs[i]*x_value_rounded[i], 
+            fat[i]*x_value_rounded[i], 
+            vitA[i]*x_value_rounded[i], 
+            vitB1[i]*x_value_rounded[i], 
+            vitB2[i]*x_value_rounded[i], 
+            vitC[i]*x_value_rounded[i], 
+            fibre[i]*x_value_rounded[i]])
+    end
+
+    diet_row = ["Diet" "" "" sum(proteins[i]*x_value_rounded[i] for i in 1:num_food) sum(carbs[i]*x_value_rounded[i] for i in 1:num_food) sum(fat[i]*x_value_rounded[i] for i in 1:num_food) sum(vitA[i]*x_value_rounded[i] for i in 1:num_food)  sum(vitB1[i]*x_value_rounded[i] for i in 1:num_food) sum(vitB2[i]*x_value_rounded[i] for i in 1:num_food) sum(vitC[i]*x_value_rounded[i] for i in 1:num_food) sum(fibre[i]*x_value_rounded[i] for i in 1:num_food)]
+
+    required_row = ["Daily Requirement" "" "" protein_req carb_req fat_req vitA_req vitB1_req vitB2_req vitC_req fibre_req]
+
+    table_data = vcat(food_rows'..., diet_row, required_row)
+
+    # @show size(table_data)
+    # @show table_data
+    pretty_table(table_data, header, title = "Optimized Diet - Nutrition Summary (double cal muffins)"; formatters = ft_printf("%5.1f"))
+end
